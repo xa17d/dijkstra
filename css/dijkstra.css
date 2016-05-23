@@ -5,3 +5,12 @@
     background-color: #ffff00;
     width: 100%;
 }
+
+/* 
+    enable multiple lines in tooltip
+    Source: http://stackoverflow.com/questions/13338780/how-to-make-twitter-bootstrap-tooltips-have-multiple-lines
+*/
+.tooltip-inner {
+    white-space:pre;
+    max-width:none;
+}

@@ -15,6 +15,7 @@
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="js/helper.js"></script>
     <script src="js/algorithmus.js"></script>
     <script src="js/controllers.js"></script>
 
@@ -29,28 +30,28 @@
 
         <div id="source-code">
             <pre>
-<span ng-class="{'line-highlight':(algorithmus.status=='start')}"> 1  function Dijkstra(Graph, source):</span>
+<span ng-class="hlLine('start')"> 1  function Dijkstra(Graph, source):</span>
  2
-<span ng-class="{'line-highlight':(algorithmus.status=='init')}"> 3      create vertex set Q
+<span ng-class="hlLine('init')"> 3      create vertex set Q
  4
  5      for each vertex v in Graph:             // Initialization
- 6          dist[v] ← INFINITY                  // Unknown distance from source to v
- 7          prev[v] ← UNDEFINED                 // Previous node in optimal path from source
+ 6          <a href="#" uib-tooltip="{{algorithmus.dist}}" tooltip-is-open="isLine('init')">dist[v]</a> ← INFINITY                  // Unknown distance from source to v
+ 7          <a href="#" uib-tooltip="{{algorithmus.prev}}" tooltip-is-open="isLine('init')" tooltip-placement="bottom">prev[v]</a> ← UNDEFINED                 // Previous node in optimal path from source
  8          add v to Q                          // All nodes initially in Q (unvisited nodes)
  9
 10      dist[source] ← 0                        // Distance from source to source</span>
 11
-<span ng-class="{'line-highlight':(algorithmus.status=='while')}">12      while Q is not empty:</span>
-<span ng-class="{'line-highlight':(algorithmus.status=='getmin')}">13          u ← vertex in Q with min dist[u]    // Source node will be selected first</span>
-<span ng-class="{'line-highlight':(algorithmus.status=='remove')}">14          remove u from Q </span>
+<span ng-class="hlLine('while')">12      while <a href="#" uib-tooltip="{{algorithmus.Q}}" tooltip-is-open="isLine('while')">Q</a> is not empty:</span>
+<span ng-class="hlLine('getmin')">13          <a href="#" uib-tooltip="{{algorithmus.u}}" tooltip-is-open="isLine('getmin')">u</a> ← vertex in Q with min <a href="#" uib-tooltip="{{algorithmus.distQ}}" tooltip-is-open="isLine('getmin')">dist[u]</a>    // Source node will be selected first</span>
+<span ng-class="hlLine('remove')">14          remove <a href="#" uib-tooltip="{{algorithmus.u}}" tooltip-is-open="isLine('remove')">u</a> from <a href="#" uib-tooltip="{{algorithmus.Q}}" tooltip-placement="bottom" tooltip-is-open="isLine('remove')">Q</a> </span>
 15
-<span ng-class="{'line-highlight':(algorithmus.status=='forneighbor')}">16          for each neighbor v of u:           // where v is still in Q.</span>
-<span ng-class="{'line-highlight':(algorithmus.status=='calcalt')}">17              alt ← dist[u] + length(u, v)</span>
-<span ng-class="{'line-highlight':(algorithmus.status=='comparedist')}">18              if alt < dist[v]:               // A shorter path to v has been found</span>
-<span ng-class="{'line-highlight':(algorithmus.status=='assigndist')}">19                  dist[v] ← alt 
+<span ng-class="hlLine('forneighbor')">16          for each neighbor v of <a href="#" uib-tooltip="{{algorithmus.uNeighbors}}" tooltip-is-open="isLine('forneighbor')">u</a>:           // where v is still in Q.</span>
+<span ng-class="hlLine('calcalt')">17              alt ← dist[u] + length(u, v)</span>
+<span ng-class="hlLine('comparedist')">18              if alt < dist[v]:               // A shorter path to v has been found</span>
+<span ng-class="hlLine('assigndist')">19                  dist[v] ← alt 
 20                  prev[v] ← u </span>
 21
-<span ng-class="{'line-highlight':(algorithmus.status=='return')}">22      return dist[], prev[]</span>
+<span ng-class="hlLine('return')">22      return dist[], prev[]</span>
             </pre>
             <blockquote>
                 <footer>from <a href="https://en.wikipedia.org/wiki/Dijkstra's_algorithm">https://en.wikipedia.org/wiki/Dijkstra's_algorithm</a></footer>

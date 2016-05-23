@@ -35,6 +35,13 @@ app.controller('MainController', ['$scope', function ($scope) {
     $scope.algorithmus = algorithmus;
 
     $scope.name = "World";
-    $scope.line = 10;
+    
+    $scope.isLine = function(status) {
+        return $scope.algorithmus.status == status;
+    }
+
+    $scope.hlLine = function (status) {
+        return { 'line-highlight': $scope.isLine(status) };
+    }
 
 }]);
