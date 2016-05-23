@@ -1,2 +1,7 @@
 ﻿body {
 }
+
+.line-highlight {
+    background-color: #ffff00;
+    width: 100%;
+}

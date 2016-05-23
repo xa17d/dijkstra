@@ -15,8 +15,8 @@
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
-    <script src="js/controllers.js"></script>
     <script src="js/algorithmus.js"></script>
+    <script src="js/controllers.js"></script>
 
     <!-- jQuery -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -27,7 +27,37 @@
 
     <div ng-controller="MainController">
 
-        Hello {{name}} !
+        <div id="source-code">
+            <pre>
+<span ng-class="{'line-highlight':(algorithmus.status=='start')}"> 1  function Dijkstra(Graph, source):</span>
+ 2
+<span ng-class="{'line-highlight':(algorithmus.status=='init')}"> 3      create vertex set Q
+ 4
+ 5      for each vertex v in Graph:             // Initialization
+ 6          dist[v] ← INFINITY                  // Unknown distance from source to v
+ 7          prev[v] ← UNDEFINED                 // Previous node in optimal path from source
+ 8          add v to Q                          // All nodes initially in Q (unvisited nodes)
+ 9
+10      dist[source] ← 0                        // Distance from source to source</span>
+11
+<span ng-class="{'line-highlight':(algorithmus.status=='while')}">12      while Q is not empty:</span>
+<span ng-class="{'line-highlight':(algorithmus.status=='getmin')}">13          u ← vertex in Q with min dist[u]    // Source node will be selected first</span>
+<span ng-class="{'line-highlight':(algorithmus.status=='remove')}">14          remove u from Q </span>
+15
+<span ng-class="{'line-highlight':(algorithmus.status=='forneighbor')}">16          for each neighbor v of u:           // where v is still in Q.</span>
+<span ng-class="{'line-highlight':(algorithmus.status=='calcalt')}">17              alt ← dist[u] + length(u, v)</span>
+<span ng-class="{'line-highlight':(algorithmus.status=='comparedist')}">18              if alt < dist[v]:               // A shorter path to v has been found</span>
+<span ng-class="{'line-highlight':(algorithmus.status=='assigndist')}">19                  dist[v] ← alt 
+20                  prev[v] ← u </span>
+21
+<span ng-class="{'line-highlight':(algorithmus.status=='return')}">22      return dist[], prev[]</span>
+            </pre>
+            <blockquote>
+                <footer>from <a href="https://en.wikipedia.org/wiki/Dijkstra's_algorithm">https://en.wikipedia.org/wiki/Dijkstra's_algorithm</a></footer>
+            </blockquote>
+        </div>
+
+        <button class="btn btn-lg btn-primary" ng-click="algorithmus.next()">Next</button>
     </div>
     
 </body>
