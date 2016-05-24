@@ -30,18 +30,21 @@ app.controller('MainController', ['$scope', function ($scope) {
     graph.addEdge(c, d, 1);
     graph.addEdge(d, e, 3);
 
-    var algorithmus = new DijkstraAlgorithmus(graph, a);
-
-    $scope.algorithmus = algorithmus;
-
-    $scope.name = "World";
-    
-    $scope.isLine = function(status) {
-        return $scope.algorithmus.status == status;
+    $scope.reset = function () {
+        $scope.algorithmus = new DijkstraAlgorithmus(graph, a);
     }
 
-    $scope.hlLine = function (status) {
-        return { 'line-highlight': $scope.isLine(status) };
+    $scope.next = function () {
+        $scope.algorithmus.nextStep();
     }
+
+    // visualization stuff
+
+    $scope.hlLine = function (line) {
+        return { 'line-highlight': $scope.algorithmus.currentStep.lines.contains(line) };
+    }
+
+    // init
+    $scope.reset();
 
 }]);

@@ -18,6 +18,7 @@
     <script src="js/helper.js"></script>
     <script src="js/algorithmus.js"></script>
     <script src="js/controllers.js"></script>
+    <script src="js/varDirective.js"></script>
 
     <!-- jQuery -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -29,36 +30,72 @@
     <div ng-controller="MainController">
 
         <div id="source-code">
-            <pre>
-<span ng-class="hlLine('start')"> 1  function Dijkstra(Graph, source):</span>
- 2
-<span ng-class="hlLine('init')"> 3      create vertex set Q
- 4
- 5      for each vertex v in Graph:             // Initialization
- 6          <a href="#" uib-tooltip="{{algorithmus.dist}}" tooltip-is-open="isLine('init')">dist[v]</a> ← INFINITY                  // Unknown distance from source to v
- 7          <a href="#" uib-tooltip="{{algorithmus.prev}}" tooltip-is-open="isLine('init')" tooltip-placement="bottom">prev[v]</a> ← UNDEFINED                 // Previous node in optimal path from source
- 8          add v to Q                          // All nodes initially in Q (unvisited nodes)
- 9
-10      dist[source] ← 0                        // Distance from source to source</span>
-11
-<span ng-class="hlLine('while')">12      while <a href="#" uib-tooltip="{{algorithmus.Q}}" tooltip-is-open="isLine('while')">Q</a> is not empty:</span>
-<span ng-class="hlLine('getmin')">13          <a href="#" uib-tooltip="{{algorithmus.u}}" tooltip-is-open="isLine('getmin')">u</a> ← vertex in Q with min <a href="#" uib-tooltip="{{algorithmus.distQ}}" tooltip-is-open="isLine('getmin')">dist[u]</a>    // Source node will be selected first</span>
-<span ng-class="hlLine('remove')">14          remove <a href="#" uib-tooltip="{{algorithmus.u}}" tooltip-is-open="isLine('remove')">u</a> from <a href="#" uib-tooltip="{{algorithmus.Q}}" tooltip-placement="bottom" tooltip-is-open="isLine('remove')">Q</a> </span>
-15
-<span ng-class="hlLine('forneighbor')">16          for each neighbor v of <a href="#" uib-tooltip="{{algorithmus.uNeighbors}}" tooltip-is-open="isLine('forneighbor')">u</a>:           // where v is still in Q.</span>
-<span ng-class="hlLine('calcalt')">17              alt ← dist[u] + length(u, v)</span>
-<span ng-class="hlLine('comparedist')">18              if alt < dist[v]:               // A shorter path to v has been found</span>
-<span ng-class="hlLine('assigndist')">19                  dist[v] ← alt 
-20                  prev[v] ← u </span>
-21
-<span ng-class="hlLine('return')">22      return dist[], prev[]</span>
-            </pre>
+            <h1>Dijkstra</h1>
+            <h2>Graph</h2>
             <blockquote>
+                <pre>
+              2
+        A ------- B
+        |         |
+        | 2       | 4
+        |         |
+        C ------- D-------E
+            1         3
+</pre>
+            </blockquote>
+            <h2>Algorithmus</h2>
+            <blockquote>
+                <pre>
+<span ng-class="hlLine(01)"> 1  function Dijkstra(Graph, source):</span>
+<span ng-class="hlLine(02)"> 2</span>
+<span ng-class="hlLine(03)"> 3      create vertex set Q</span>
+<span ng-class="hlLine(04)"> 4</span>
+<span ng-class="hlLine(05)"> 5      for each vertex v in Graph:             // Initialization</span>
+<span ng-class="hlLine(06)"> 6          <v info="{name: 'dist', text: 'dist[v]'}"></v> ← INFINITY                  // Unknown distance from source to v</span>
+<span ng-class="hlLine(07)"> 7          <v info="{name: 'prev', text: 'prev[v]'}"></v> ← UNDEFINED                 // Previous node in optimal path from source</span>
+<span ng-class="hlLine(08)"> 8          add v to <v info="{name: 'Q', text: 'Q'}"></v>                          // All nodes initially in Q (unvisited nodes)</span>
+<span ng-class="hlLine(09)"> 9</span>
+<span ng-class="hlLine(10)">10      <v info="{name: 'dist', text: 'dist[source]'}"></v> ← 0                        // Distance from source to source</span>
+<span ng-class="hlLine(11)">11</span>
+<span ng-class="hlLine(12)">12      while <v info="{name: 'Q', text: 'Q'}"></v> is not empty:</span>
+<span ng-class="hlLine(13)">13          <v info="{name: 'u', text: 'u'}"></v> ← vertex in Q with min <v info="{name: 'distQ', text: 'dist[u]'}"></v>      // Source node will be selected first</span>
+<span ng-class="hlLine(14)">14          remove <v info="{name: 'u', text: 'u'}"></v> from <v info="{name: 'Q', text: 'Q'}"></v> </span>
+<span ng-class="hlLine(15)">15</span>
+<span ng-class="hlLine(16)">16          for each neighbor <v info="{name: 'v', text: 'v'}"></v> of <v info="{name: 'uNeighbors', text: 'u'}"></v>:           // where v is still in Q.</span>
+<span ng-class="hlLine(17)">17              <v info="{name: 'alt', text: 'alt'}"></v> ← <v info="{name: 'dist', text: 'dist[u]'}"></v> + <v info="{name: 'lengthUV', text: 'length(u, v)'}"></v></span>
+<span ng-class="hlLine(18)">18              if <v info="{name: 'alt', text: 'alt'}"></v> < dist[v]:               // A shorter path to v has been found</span>
+<span ng-class="hlLine(19)">19                  <v info="{name: 'dist', text: 'dist[v]'}"></v> ← <v info="{name: 'alt', text: 'alt'}"></v> </span>
+<span ng-class="hlLine(20)">20                  <v info="{name: 'prev', text: 'prev[v]'}"></v> ← <v info="{name: 'u', text: 'u'}"></v> </span>
+<span ng-class="hlLine(21)">21</span>
+<span ng-class="hlLine(22)">22      return dist[], prev[]</span>
+            </pre>
+
                 <footer>from <a href="https://en.wikipedia.org/wiki/Dijkstra's_algorithm">https://en.wikipedia.org/wiki/Dijkstra's_algorithm</a></footer>
             </blockquote>
         </div>
 
-        <button class="btn btn-lg btn-primary" ng-click="algorithmus.next()">Next</button>
+        <button class="btn btn-lg btn-primary" ng-click="next()">Next</button>
+        <button class="btn btn-lg btn-warning" ng-click="reset()">Reset</button>
+
+        <div class="row">
+            <div class="col-md-4">
+                <pre>
+u = {{algorithmus.display.u}}
+v = {{algorithmus.display.v}}
+Q = {{algorithmus.display.Q}}
+                </pre>
+            </div>
+            <div class="col-md-4">
+                <pre>
+{{algorithmus.display.dist}}
+                </pre>
+            </div>
+            <div class="col-md-4">
+                <pre>
+{{algorithmus.display.prev}}
+                </pre>
+            </div>
+        </div>
     </div>
     
 </body>

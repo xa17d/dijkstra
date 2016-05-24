@@ -70,3 +70,7 @@ Array.prototype.remove = function (item) {
         this.removeAt(i, 1);
     }
 };
+
+Array.prototype.contains = function (item) {
+    return this.indexOf(item) >= 0;
+};

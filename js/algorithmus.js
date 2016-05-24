@@ -35,139 +35,263 @@ function Graph() {
     }
 }
 
-function DijkstraAlgorithmus(graph, start) {
-    this.status = 'start';
+function DijkstraAlgorithmus(graph, source) {
 
-    // variables for display
-    this.Q = "?";
-    this.u = "?";
-    this.uNeighbors = "?";
-    this.v = "?";
-    this.dist = "?";
-    this.distQ = "?";
-    this.prev = "?";
-    this.lengthUV = "?";
-    this.alt = "?";
+    // variables for algorithmus
+    this.Q = null;
+    this.u = null;
+    this.v = null;
+    this.lengthUV = null;
+    this.alt = null;
 
-    // actual variables to work with
-    var vars = {
-        Q: [],
-        u: null,
-        v: null,
-        forNeighborIndex: 0
+    // variables for algorithmus but prepared to display to the user
+    this.display = {
+        Q: '?',
+        u: '?',
+        v: '?',
+        lengthUV: '?',
+        alt: '?',
+        dist: '?',
+        prev: '?',
+        distQ: '?',
+        uNeighbors: '?'
     };
 
-    var me = this;
+    // make this algorithmus referencable in inner methods
+    var algorithmus = this;
 
-    function getName(obj) {
-        return (obj == null ? "null" : obj.name);
-    }
+    // update display variables
+    var updateDisplay = function () {
 
-    // update varaiables for display
-    var update = function () {
-        // update Q
-        me.Q = "[";
-        vars.Q.forEach(function (v, i) {
-            if (i != 0) { me.Q += ", "; }
-            me.Q += v.name;
+        var getName = function (obj) { return obj == null ? "?" : obj.name; }
+
+        // Q
+        algorithmus.display.Q = "[";
+        algorithmus.Q.forEach(function (v, i) {
+            if (i != 0) { algorithmus.display.Q += ", "; }
+            algorithmus.display.Q += getName(v);
         });
-        me.Q += "]";
+        algorithmus.display.Q += "]";
 
-        // update dist
-        me.dist = "";
-        graph.vertices.forEach(function (v, i) {
-            if (i != 0) { me.dist += "\n"; }
-            me.dist += "dist[" + v.name + "] = " + v.dist;
-        });
+        // u
+        algorithmus.display.u = getName(algorithmus.u);
 
-        // update distQ
-        me.distQ = "";
-        vars.Q.forEach(function (v, i) {
-            if (i != 0) { me.distQ += "\n"; }
-            me.distQ += "dist[" + v.name + "] = " + v.dist;
-        });
-
-        // update prev
-        me.prev = "";
-        graph.vertices.forEach(function (v, i) {
-            if (i != 0) { me.prev += "\n"; }
-            me.prev += "prev[" + v.name + "] = " + getName(v.prev);
-        });
-
-        // update u
-        me.u = getName(vars.u);
-
-        // update v
-        me.v = getName(vars.v);
-
-        // update uNeighbors
-        me.uNeighbors = "neighbors of "+getName(vars.u)+": ";
-        vars.u.neighbors.forEach(function (edge, i) {
-            me.uNeighbors += "\n" + getName(edge.vertex) + " dist: " + edge.dist;
-        });
-    }
-
-    this.next = function () {
-        // TODO: implement real stuff
-        if (this.status == 'start') {
-            // move to next status
-            this.status = 'init';
-
-            // do init stuff:
-            graph.vertices.forEach(function (v) { vars.Q.push(v); })
-            start.dist = 0;
-
+        // uNeighbors
+        if (algorithmus.u == null) {
+            algorithmus.display.uNeighbors = '?';
+        } else {
+            algorithmus.display.uNeighbors = 'Neighbors of ' + algorithmus.u.name;
+            algorithmus.u.neighbors.forEach(function (edge, i) {
+                algorithmus.display.uNeighbors += "\n" + edge.vertex.name + "  dist: " + edge.dist;
+            });
         }
-        else if (this.status == 'init') {
-            // move to next status
-            this.status = 'while';
 
-            // nothing to do here
-        }
-        else if (this.status == 'while') {
-            // check to which status to move next
-            if (vars.Q.length == 0) {
-                this.status = 'return';
+        // v
+        algorithmus.display.v = getName(algorithmus.v);
+
+        // lengthUV
+        algorithmus.display.lengthUV = (algorithmus.lengthUV == null ? "?" : algorithmus.lengthUV);
+
+        // alt
+        algorithmus.display.alt = (algorithmus.alt == null ? "?" : algorithmus.alt);
+
+        // dist
+        algorithmus.display.dist = "";
+        graph.vertices.forEach(function (v, i) {
+            if (i != 0) { algorithmus.display.dist += "\n"; }
+            algorithmus.display.dist += "dist[" + v.name + "] = " + v.dist;
+        });
+
+        // distQ
+        algorithmus.display.distQ = "";
+        algorithmus.Q.forEach(function (v, i) {
+            if (i != 0) { algorithmus.display.distQ += "\n"; }
+            algorithmus.display.distQ += "dist[" + v.name + "] = " + v.dist;
+        });
+
+        // prev
+        algorithmus.display.prev = "";
+        graph.vertices.forEach(function (v, i) {
+            if (i != 0) { algorithmus.display.prev += "\n"; }
+            algorithmus.display.prev += "prev[" + v.name + "] = " + getName(v.prev);
+        });
+    };
+
+    // Here are the steps defined for the algorithmus:
+    this.steps = {
+        start: {
+            /// Start ///
+            name: 'start',
+            lines: [1],
+            run: function () {
+                // nothing to do.
+            },
+            next: function () {
+                return algorithmus.steps.init;
             }
-            else {
-                this.status = 'getmin';
+        },
+        init: {
+            /// Init ///
+            name: 'init',
+            lines: [3, 4, 5, 6, 7, 8, 9, 10],
+            run: function () {
 
-                // find vertex u in Q with minimum dist[u]
-                vars.u = vars.Q[0];
-                vars.Q.forEach(function (v) {
-                    if (vars.u.dist > v.dist) {
-                        vars.u = v;
+                algorithmus.Q = [];                         //: create vertex set Q
+                graph.vertices.forEach(function (v) {       //: for each vertex v in Graph
+                    v.dist = Number.POSITIVE_INFINITY;      //:     dist[v] = INFINITY
+                    v.prev = null;                          //:     dist[v] = UNDEFINED
+                    algorithmus.Q.push(v);                  //:     add v to Q 
+                });                                         //:
+                source.dist = 0;                            //: dist[source] = 0
+            },
+            next: function () {
+                return algorithmus.steps.whileloop;
+            }
+        },
+        whileloop: {
+            /// While Loop ///
+            name: 'whileloop',
+            lines: [12],
+            run: function () {
+                // nothing to do
+            },
+            next: function () {
+                if (algorithmus.Q.length == 0)              //: while Q is not empty
+                { return algorithmus.steps.finish; }
+                else
+                { return algorithmus.steps.getmin; }
+            }
+        },
+        getmin: {
+            /// Get Vertex u with minimum dist[u] ///
+            name: 'getmin',
+            lines: [13],
+            run: function () {
+                var u = algorithmus.Q[0];                   //:  u = vertex in Q with min dist[u]
+                algorithmus.Q.forEach(function (v) {
+                    if (v.dist < u.dist) {
+                        u = v;
                     }
                 });
+                algorithmus.u = u;
+            },
+            next: function () {
+                return algorithmus.steps.remove;
+            }
+        },
+        remove: {
+            /// Remove u from Q ///
+            name: 'remove',
+            lines: [14],
+            run: function () {
+                algorithmus.Q.remove(algorithmus.u);        //:     remove u from Q 
+            },
+            next: function () {
+                return algorithmus.steps.forneighbor;
+            }
+        },
+        forneighbor: {
+            /// for each neighbor v of u where v is still in Q. ///
+            name: 'forneighbor',
+            lines: [16],
+            index: 0,
+            run: function () {
+                var nextNeighborEdge = null;                           //:     for each neighbor v of u where v is still in Q
+
+                // start at index where stopped the last time 
+                for (var i = this.index; i < algorithmus.u.neighbors.length; i++) {
+                    var edge = algorithmus.u.neighbors[i];
+
+                    if (algorithmus.Q.contains(edge.vertex)) {
+                        // this is our next neighbor
+                        nextNeighborEdge = edge;
+                        this.index = i + 1; // start with next item at next iteration
+                        break; // exit loop
+                    }
+                }
+
+                if (nextNeighborEdge == null) {
+                    // no more neighbor found.
+                    // reset index and exit loop (see next-function)
+
+                    this.index = 0;
+                    algorithmus.v = null;
+                    algorithmus.lengthUV = null;
+                }
+                else {
+                    algorithmus.v = nextNeighborEdge.vertex;
+                    algorithmus.lengthUV = nextNeighborEdge.dist;
+                }
+            },
+            next: function () {
+                if (algorithmus.v == null) {
+                    // no neighbor found -> exit loop
+                    return algorithmus.steps.whileloop;
+                }
+                else {
+                    // handle next neighbor
+                    return algorithmus.steps.calcalt;
+                }
+            }
+        },
+        calcalt: {
+            /// Calculate alternative distance ///
+            name: 'calcalt',
+            lines: [17],
+            run: function () {
+                algorithmus.alt = algorithmus.u.dist + algorithmus.lengthUV; //:         alt = dist[u] + length(u, v)
+            },
+            next: function () {
+                return algorithmus.steps.comparedist;
+            }
+        },
+        comparedist: {
+            /// Compare distance ///
+            name: 'comparedist',
+            lines: [18],
+            run: function () {
+                // nothing to do
+                // everything decides in next-function
+            },
+            next: function () {
+                if (algorithmus.alt < algorithmus.v.dist)         //:         if alt < dist[v]
+                { return algorithmus.steps.assigndist; }
+                else
+                { return algorithmus.steps.forneighbor; }
+            }
+        },
+        assigndist: {
+            /// assign distance and previous ///
+            name: 'assigndist',
+            lines: [19, 20],
+            run: function () {
+                algorithmus.v.dist = algorithmus.alt;
+                algorithmus.v.prev = algorithmus.u;
+            },
+            next: function () {
+                return algorithmus.steps.forneighbor;
+            }
+        },
+        finish: {
+            /// Return / Algorithmus terminates ///
+            name: 'finish',
+            lines: [22],
+            run: function () {
+                // nothing to do
+            },
+            next: function () {
+                // there is no next, so just stay here
+                return algorithmus.steps.finish;
             }
         }
-        else if (this.status == 'getmin') {
-            // move to next status
-            this.status = 'remove';
+    };
 
-            // remove u from Q
-            vars.Q.remove(vars.u);
-        }
-        else if (this.status == 'remove') {
-            // move to next status
-            this.status = 'forneighbor';
+    this.currentStep = this.steps.start;
 
-            // start with first neighbor
-            vars.forNeighborIndex = 0;
-            
-            if (u.neighbors.length == 0) {
-                vars.v = null;
-            }
-            else {
-                vars.v = u.neighbors[vars.forNeighborIndex];
-            }
-        }
-        else if (this.status == 'forneighbor') { this.status = 'calcalt'; }
-        else if (this.status == 'calcalt') { this.status = 'comparedist'; }
-        else if (this.status == 'comparedist') { this.status = 'assigndist'; }
-        else if (this.status == 'assigndist') { this.status = 'return'; }
-        else if (this.status == 'return') { this.status = 'start'; }
-
-        update(); // update variables for display
+    this.nextStep = function () {
+        var next = this.currentStep.next(); // get next step from current step
+        this.currentStep = next; // set the next step as current
+        this.currentStep.run(); // execute
+        updateDisplay(); // update display variables
     }
 }
