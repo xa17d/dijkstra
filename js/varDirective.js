@@ -1,6 +1,8 @@
 ﻿'use strict';
 
-app.directive('v', function () {
+angular.module('dijkstraApp')
+
+.directive('v', function () {
     var directive = {};
 
     directive.restrict = 'E'; /* restrict this directive to elements */
