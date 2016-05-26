@@ -14,3 +14,24 @@
     white-space:pre;
     max-width:none;
 }
+
+
+.input-view {
+    margin-bottom: 2px !important;
+}
+.input-view>label {
+    color: rgb(76, 175, 80) !important;
+    font-size: larger;
+}
+.input-view>input {
+    color: rgb(76,175,80) !important;
+    border-color: rgb(255,215,64) !important;
+    border-bottom-style: solid !important;
+    background-image: none !important;
+    cursor: context-menu !important;
+}
+.md-errors-spacer {
+    min-height: 0px;
+    height: 0px;
+    max-height: 0px;
+}

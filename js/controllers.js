@@ -8,15 +8,25 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
             .accentPalette('amber');
     })
 
-    .controller('MainController', ['$scope', '$mdDialog', '$mdSidenav', function ($scope, $mdDialog, $mdSidenav) {
+    .controller('MainController', ['$scope', '$mdDialog', '$mdSidenav', '$interval', 'graph', function ($scope, $mdDialog, $mdSidenav, $interval, graph) {
 
         $scope.drawVertex = true;
+        $scope.runInterval = 1;     // in seconds
 
-        $scope.toggleNode = function() {
-            $mdSidenav('node').toggle();
+        $scope.toggleMenu = function() {
+            $mdSidenav('menu').toggle();
         }
-        $scope.isOpenNode = function(){
-            return $mdSidenav('node').isOpen();
+        $scope.isOpenMenu = function(){
+            return $mdSidenav('menu').isOpen();
+        };
+
+        $scope.activeVertex = null;
+        $scope.toggleVertex = function(vertex) {
+            $scope.activeVertex = (typeof vertex !== 'undefined') ? vertex : null;
+            $mdSidenav('vertex').toggle();
+        }
+        $scope.isOpenVertex = function(){
+            return $mdSidenav('vertex').isOpen();
         };
 
         $scope.toggleEdge = function() {
@@ -58,6 +68,12 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
             originatorEv = null;
         };
 
+        $scope.graph = graph;
+
+        $scope.$watch('activeVertex.name', function () {
+            graph.refresh();
+        });
+
         // -------------------------------
 
         /* Create Example Graph
@@ -71,7 +87,7 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
                 1         3
         */
 
-        var graph = new Graph();
+        var graphOld = new Graph();
 
         var a = new Vertex("A");
         var b = new Vertex("B");
@@ -79,19 +95,31 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
         var d = new Vertex("D");
         var e = new Vertex("E");
 
-        graph.addVertices(a,b,c,d,e);
-        graph.addEdge(a, b, 2);
-        graph.addEdge(a, c, 2);
-        graph.addEdge(b, d, 4);
-        graph.addEdge(c, d, 1);
-        graph.addEdge(d, e, 3);
+        graphOld.addVertices(a,b,c,d,e);
+        graphOld.addEdge(a, b, 2);
+        graphOld.addEdge(a, c, 2);
+        graphOld.addEdge(b, d, 4);
+        graphOld.addEdge(c, d, 1);
+        graphOld.addEdge(d, e, 3);
 
         $scope.reset = function () {
-            $scope.algorithmus = new DijkstraAlgorithmus(graph, a);
+            $scope.algorithmus = new DijkstraAlgorithmus(graphOld, a);
         }
 
         $scope.next = function () {
             $scope.algorithmus.nextStep();
+        }
+
+        $scope.runnable = null;
+        $scope.run = function () {
+            $scope.runnable = $interval(function () {
+                $scope.next();
+            }, $scope.runInterval * 1000);
+        }
+
+        $scope.stopRun = function() {
+            $interval.cancel($scope.runnable);
+            $scope.runnable = null;
         }
 
         // visualization stuff
@@ -105,14 +133,19 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
 
     }])
 
-    .controller('VertexSidenavCtrl', function ($scope, $timeout, $mdSidenav) {
+    .controller('MenuSidenavCtrl', function ($scope, $mdSidenav) {
+
+        
+    })
+
+    .controller('VertexSidenavCtrl', function ($scope, $mdSidenav) {
 
         $scope.close = function () {
             $mdSidenav('node').close();
         };
     })
 
-    .controller('EdgeSidenavCtrl', function ($scope, $timeout, $mdSidenav) {
+    .controller('EdgeSidenavCtrl', function ($scope, $mdSidenav) {
 
         $scope.close = function () {
             $mdSidenav('edge').close();

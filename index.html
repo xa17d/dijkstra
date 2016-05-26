@@ -38,11 +38,11 @@
 
         <md-toolbar>
             <div class="md-toolbar-tools md-whiteframe-z4">
-                <md-button class="md-icon-button" aria-label="Menu">
+                <md-button class="md-icon-button" aria-label="Menu" ng-click="toggleMenu()">
                     <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
                 </md-button>
                 <h2>
-                    <span ng-click="toggleRight">Dijkstra Algorithm</span>
+                    <span>Dijkstra Algorithm</span>
                 </h2>
                 <span flex></span>
                 <md-menu>
@@ -69,26 +69,70 @@
 
         <section layout="row" flex>
 
-            <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="node">
+            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="menu">
                 <md-toolbar class="md-theme-light">
-                    <h1 class="md-toolbar-tools">Vertex</h1>
+                    <div class="md-toolbar-tools md-whiteframe-z4">
+                        <md-button class="md-icon-button" aria-label="Menu" ng-click="toggleMenu()">
+                            <md-icon md-svg-icon="img/icons/back.svg"></md-icon>
+                        </md-button>
+                        <h2>
+                            <span>Dijkstra Algorithm</span>
+                        </h2>
+                        <span flex></span>
+                    </div>
+                </md-toolbar>
+                <md-content ng-controller="MenuSidenavCtrl" layout-padding>
+
+
+                </md-content>
+            </md-sidenav>
+
+            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="vertex">
+                <md-toolbar class="md-theme-light">
+                    <div class="md-toolbar-tools md-whiteframe-z4">
+                        <md-button class="md-icon-button" aria-label="Menu" ng-click="toggleVertex()">
+                            <md-icon md-svg-icon="img/icons/back.svg"></md-icon>
+                        </md-button>
+                        <h2>
+                            <span>Vertex</span>
+                        </h2>
+                        <span flex></span>
+                    </div>
                 </md-toolbar>
                 <md-content ng-controller="VertexSidenavCtrl" layout-padding>
                     <form>
                         <md-input-container>
                             <label for="lbVertexName">Vertex Name</label>
-                            <input type="text" id="lbVertexName" ng-model="vertexName" md-autofocus>
+                            <input type="text" id="lbVertexName" ng-model="activeVertex.name" md-autofocus>
                         </md-input-container>
                     </form>
-                    <md-button ng-click="close()" class="md-primary">
-                        Close
-                    </md-button>
+                    <div layout="row" layout-align="space-around center">
+                        <md-button ng-disabled="activeVertex.isStart || activeVertex.isEnd" ng-click="graph.setStart(activeVertex)" class="md-primary" ng-class="{'md-raised': activeVertex.isStart}">
+                            Start
+                        </md-button>
+                        <md-button ng-disabled="activeVertex.isStart || activeVertex.isEnd" ng-click="graph.setEnd(activeVertex)" class="md-primary" ng-class="{'md-raised': activeVertex.isEnd}">
+                            End
+                        </md-button>
+                    </div>
+                    <div layout="row" layout-align="space-around center">
+                        <md-button ng-disabled="activeVertex.isStart || activeVertex.isEnd" ng-click="graph.removeVertex(activeVertex); toggleVertex()" class="md-primary">
+                            Remove
+                        </md-button>
+                    </div>
                 </md-content>
             </md-sidenav>
 
-            <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="edge">
+            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="edge">
                 <md-toolbar class="md-theme-light">
-                    <h1 class="md-toolbar-tools">Edge</h1>
+                    <div class="md-toolbar-tools md-whiteframe-z4">
+                        <md-button class="md-icon-button" aria-label="Menu" ng-click="toggleEdge()">
+                            <md-icon md-svg-icon="img/icons/back.svg"></md-icon>
+                        </md-button>
+                        <h2>
+                            <span>Edge</span>
+                        </h2>
+                        <span flex></span>
+                    </div>
                 </md-toolbar>
                 <md-content ng-controller="EdgeSidenavCtrl" layout-padding>
                     <form>
@@ -97,9 +141,6 @@
                             <input type="text" id="lbEdgeWeight" ng-model="edgeWeight" md-autofocus>
                         </md-input-container>
                     </form>
-                    <md-button ng-click="close()" class="md-primary">
-                        Close
-                    </md-button>
                 </md-content>
             </md-sidenav>
 
@@ -141,8 +182,20 @@
                             </pre>
                         </md-card-content>
                         <md-card-actions layout="row" layout-align="end center">
-                            <md-button ng-click="reset()" class="md-primary">Reset</md-button>
-                            <md-button ng-click="next()" class="md-raised md-primary">Next</md-button>
+                            <div layout style="width: 450px;">
+                                <div flex="10" layout layout-align="center center">
+                                    <span class="md-body-1">slow</span>
+                                </div>
+                                <md-slider class="md-primary" md-discrete ng-model="runInterval" step="0.25" min="0.25" max="3" ng-disabled="runnable !== null" aria-label="speed" flex></md-slider>
+                                <div flex="10" layout layout-align="center center">
+                                    <span class="md-body-1">fast</span>
+                                </div>
+                            </div>
+                            <span flex="10"></span>
+                            <md-button ng-click="reset()" ng-disabled="runnable !== null" class="md-accent">Reset</md-button>
+                            <md-button ng-click="next()" ng-disabled="runnable !== null" class="md-primary">Next</md-button>
+                            <md-button ng-show="runnable === null" ng-click="run()" class="md-raised md-primary">Run</md-button>
+                            <md-button ng-hide="runnable === null" ng-click="stopRun()" class="md-raised md-primary">Stop</md-button>
                         </md-card-actions>
                     </md-card>
                     <md-card>
@@ -157,19 +210,19 @@
                         <md-card-content>
                             <div layout="row" layout-align="space-around center">
                                 <form>
-                                    <md-input-container>
+                                    <md-input-container class="input-view">
                                         <label for="lbU">u</label>
                                         <input type="text" id="lbU" ng-model="algorithmus.display.u" disabled>
                                     </md-input-container>
                                 </form>
                                 <form>
-                                    <md-input-container>
+                                    <md-input-container class="input-view">
                                         <label for="lbV">v</label>
                                         <input type="text" id="lbV" ng-model="algorithmus.display.v" disabled>
-                                    </md-input-container>
+                                    </md-input-container class="input-view">
                                 </form>
                                 <form>
-                                    <md-input-container>
+                                    <md-input-container class="input-view">
                                         <label for="lbQ">Q</label>
                                         <input type="text" id="lbQ" ng-model="algorithmus.display.Q" disabled>
                                     </md-input-container>
@@ -177,13 +230,13 @@
                             </div>
                             <div layout="row" layout-align="space-around center">
                                 <form>
-                                    <md-input-container>
+                                    <md-input-container class="input-view">
                                         <label for="lbDist">Distance</label>
                                         <input type="text" id="lbDist" ng-model="algorithmus.display.dist" disabled>
                                     </md-input-container>
                                 </form>
                                 <form>
-                                    <md-input-container>
+                                    <md-input-container class="input-view">
                                         <label for="lbPrev">Previous</label>
                                         <input type="text" id="lbPrev" ng-model="algorithmus.display.prev" disabled>
                                     </md-input-container>
@@ -217,15 +270,6 @@
             </md-content>
         </section>
     </div>
-<!--
 
-        <div id="source-code">
-
-                <footer>from <a href="https://en.wikipedia.org/wiki/Dijkstra's_algorithm">https://en.wikipedia.org/wiki/Dijkstra's_algorithm</a></footer>
-            </blockquote>
-        </div>
-
--->
-    
 </body>
 </html>

@@ -51,7 +51,7 @@ angular.module('dijkstraApp')
                             coordinateX >= vertex.coordinateX - 2 * nodeRadius && coordinateX <= vertex.coordinateX + 2 * nodeRadius &&
                             coordinateY >= vertex.coordinateY - 2 * nodeRadius && coordinateY <= vertex.coordinateY + 2 * nodeRadius
                         ) {
-                            scope.$parent.toggleNode();
+                            scope.$parent.toggleVertex(vertex);
                             selectedVertex = vertex;
                             redrawCanvas();
                             return;
@@ -132,6 +132,25 @@ angular.module('dijkstraApp')
                     context.lineWidth = nodeStrokeWidth;
                     context.strokeStyle = '#000000';
                     context.stroke();
+
+                    context.font = "14px Century Gothic";
+                    context.fillStyle = "#333333";
+                    context.textAlign = "center";
+                    context.fillText(vertex.name, vertex.coordinateX, vertex.coordinateY - nodeRadius * 1.5);
+
+                    if(vertex.isStart) {
+                        context.font = "16px Century Gothic";
+                        context.fillStyle = "#4CAF50";
+                        context.textAlign = "center";
+                        context.fillText('S', vertex.coordinateX, vertex.coordinateY + 6);
+                    }
+
+                    if(vertex.isEnd) {
+                        context.font = "16px Century Gothic";
+                        context.fillStyle = "#4CAF50";
+                        context.textAlign = "center";
+                        context.fillText('E', vertex.coordinateX, vertex.coordinateY + 6);
+                    }
                 });
             }
         }
