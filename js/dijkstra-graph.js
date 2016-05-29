@@ -14,7 +14,9 @@ angular.module('dijkstraApp')
         vertex.name = 'V' + vertex.id;
         vertex.isStart = (vertices.length === 0);
         vertices.push(vertex);
-        setEnd(vertex);
+        if(vertices.length > 1) {
+            this.setEnd(vertex);
+        }
         //notifyListeners();        //no notifier necessary, because 'setEnd()' also notifies listeners after finishing
     };
     this.addEdge = function(edge) {
@@ -22,6 +24,7 @@ angular.module('dijkstraApp')
 
         edge.id = getNewId();
         edge.name = 'E' + edge.id;
+        edge.weight = NaN;
         edges.push(edge);
         notifyListeners();
     };
@@ -38,6 +41,7 @@ angular.module('dijkstraApp')
         angular.forEach(vertices, function(vertex) {
             if(vertex.id = id) {
                 result = vertex;
+                return;
             }
         });
         return result;
@@ -47,41 +51,32 @@ angular.module('dijkstraApp')
         angular.forEach(edges, function(edge) {
             if(edge.id = id) {
                 result = edge;
+                return;
             }
         });
         return result;
     };
 
     this.removeVertex = function(vertex) {
-        angular.forEach(vertices, function (v) {
-            if(v.id === vertex.id) {
-                vertices.splice(vertices.indexOf(v), 1);
-                notifyListeners();
-                return;
-            }
-        })
+        vertices.splice(vertices.indexOf(this.getVertex(vertex.id)), 1);
+        notifyListeners();
     };
     this.removeEdge = function(edge) {
-        angular.forEach(edges, function (e) {
-            if(e.id === edge.id) {
-                edges.splice(edges.indexOf(e), 1);
-                notifyListeners();
-                return;
-            }
-        })
+        edges.splice(edges.indexOf(this.getEdge(edge.id)), 1);
+        notifyListeners();
     };
 
     this.setStart = function (vertex) {
         angular.forEach(vertices, function (v) {
-            v.isStart = (v.id === vertex.id);
-        });
+            v.isStart = this.equals(v, vertex);
+        }, this);
         notifyListeners();
     };
 
     this.setEnd = function (vertex) {
         angular.forEach(vertices, function (v) {
-            v.isEnd = (v.id === vertex.id);
-        });
+            v.isEnd = this.equals(v, vertex);
+        }, this);
         notifyListeners();
     };
 
@@ -97,6 +92,14 @@ angular.module('dijkstraApp')
         vertices = [];
         edges = [];
     };
+
+    this.equals = function (o1, o2) {
+        if(typeof o1.id !== 'undefined' && typeof o2.id !== 'undefined') {
+            return o1.id === o2.id;
+        }
+
+        return false;
+    }
 
 
     function getNewId() {

@@ -82,7 +82,17 @@
                     </div>
                 </md-toolbar>
                 <md-content ng-controller="MenuSidenavCtrl" layout-padding>
+                    <md-subheader class="md-no-sticky">Graph</md-subheader>
+                    <md-list-item ng-click="import()">
+                        <md-icon md-svg-icon="img/icons/import.svg"></md-icon>
+                        <p> Import </p>
+                    </md-list-item>
+                    <md-list-item ng-click="export()">
+                        <md-icon md-svg-icon="img/icons/export.svg"></md-icon>
+                        <p> Export </p>
+                    </md-list-item>
 
+                    <md-divider></md-divider>
 
                 </md-content>
             </md-sidenav>
@@ -138,7 +148,7 @@
                     <form>
                         <md-input-container>
                             <label for="lbEdgeWeight">Edge Weight</label>
-                            <input type="text" id="lbEdgeWeight" ng-model="edgeWeight" md-autofocus>
+                            <input type="text" id="lbEdgeWeight" ng-model="activeEdge.weight" md-autofocus>
                         </md-input-container>
                     </form>
                 </md-content>

@@ -29,7 +29,9 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
             return $mdSidenav('vertex').isOpen();
         };
 
-        $scope.toggleEdge = function() {
+        $scope.activeEdge = null;
+        $scope.toggleEdge = function(edge) {
+            $scope.activeEdge = (typeof edge !== 'undefined') ? edge : null;
             $mdSidenav('edge').toggle();
         }
         $scope.isOpenEdge = function(){
@@ -71,6 +73,10 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
         $scope.graph = graph;
 
         $scope.$watch('activeVertex.name', function () {
+            graph.refresh();
+        });
+
+        $scope.$watch('activeEdge.weight', function () {
             graph.refresh();
         });
 
@@ -133,10 +139,18 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
 
     }])
 
-    .controller('MenuSidenavCtrl', function ($scope, $mdSidenav) {
+    .controller('MenuSidenavCtrl', ['$scope', 'graph', function ($scope, graph) {
 
-        
-    })
+        $scope.import = function () {
+
+            //TODO
+        };
+
+        $scope.export = function () {
+
+            // TODO
+        }
+    }])
 
     .controller('VertexSidenavCtrl', function ($scope, $mdSidenav) {
 
