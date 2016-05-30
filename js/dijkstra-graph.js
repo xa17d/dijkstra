@@ -24,7 +24,7 @@ angular.module('dijkstraApp')
 
         edge.id = getNewId();
         edge.name = 'E' + edge.id;
-        edge.weight = NaN;
+        // edge.weight = NaN; // weight should be set in parameter object?
         edges.push(edge);
         notifyListeners();
     };

@@ -87,7 +87,8 @@ angular.module('dijkstraApp')
                         else {
                             var edge = {
                                 vertex1: currentVertex,
-                                vertex2: selectedVertex
+                                vertex2: selectedVertex,
+                                weight: Math.round(verticesDistance(currentVertex, selectedVertex))
                             };
                             graph.addEdge(edge);
                             addEdgePixels(edge)
@@ -110,6 +111,13 @@ angular.module('dijkstraApp')
             });
             
             graph.addListener(redrawCanvas);
+
+            // Distance between two vertices using Pythagoras
+            function verticesDistance(vertex1, vertex2) {
+                var dx = vertex1.coordinateX - vertex2.coordinateX;
+                var dy = vertex1.coordinateY - vertex2.coordinateY;
+                return Math.sqrt(dx*dx + dy*dy);
+            }
 
             // see https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
             function addEdgePixels(edge) {
