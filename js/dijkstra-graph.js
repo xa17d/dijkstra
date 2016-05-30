@@ -8,6 +8,8 @@ angular.module('dijkstraApp')
     var listeners = [];
     var vertices = [];
     var edges = [];
+
+    this.algorithm = null;
     
     this.addVertex = function(vertex) {
         vertex.id = getNewId();
@@ -38,14 +40,15 @@ angular.module('dijkstraApp')
 
     this.getVertexNeighbors = function (vertex) {
         var result = [];
+        var graph = this;
         angular.forEach(edges, function (edge) {
-            if (edge.vertex1.id == vertex.id) {
+            if (graph.equals(edge.vertex1, vertex)) {
                 result.push({
                     vertex: edge.vertex2,
                     dist: edge.weight * 1.0 // ensure it's a Number (sometimes the user input is stored as String in the variable)
                 });
             }
-            else if (edge.vertex2.id == vertex.id) {
+            else if (graph.equals(edge.vertex2, vertex)) {
                 result.push({
                     vertex: edge.vertex1,
                     dist: edge.weight * 1.0 // ensure it's a Number (sometimes the user input is stored as String in the variable)
@@ -54,6 +57,17 @@ angular.module('dijkstraApp')
         });
         return result;
     };
+    this.getEdgeFromVertexToVertex = function (vertex1, vertex2) {
+        var result = null;
+        var graph = this;
+        angular.forEach(edges, function (edge) {
+            if (graph.equals(edge.vertex1, vertex1) && graph.equals(edge.vertex2, vertex2) ||
+                graph.equals(edge.vertex1, vertex2) && graph.equals(edge.vertex2, vertex1)) {
+                result = edge;
+            }
+        });
+        return result;
+    }
 
     this.getVertex = function(id) {
         var result = {};
@@ -123,7 +137,7 @@ angular.module('dijkstraApp')
     };
 
     this.equals = function (o1, o2) {
-        if(typeof o1.id !== 'undefined' && typeof o2.id !== 'undefined') {
+        if(o1 != null && o2 != null && typeof o1.id !== 'undefined' && typeof o2.id !== 'undefined') {
             return o1.id === o2.id;
         }
 

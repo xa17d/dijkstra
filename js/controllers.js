@@ -1,14 +1,8 @@
 ﻿'use strict';
 
-angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
+angular.module('dijkstraApp')
 
-    .config(function($mdThemingProvider) {
-        $mdThemingProvider.theme('default')
-            .primaryPalette('green')
-            .accentPalette('amber');
-    })
-
-    .controller('MainController', ['$scope', '$mdDialog', '$mdSidenav', '$interval', 'graph', function ($scope, $mdDialog, $mdSidenav, $interval, graph) {
+    .controller('MainController', ['$scope', '$mdDialog', '$mdSidenav', '$interval', 'graph', 'algorithm', function ($scope, $mdDialog, $mdSidenav, $interval, graph, algorithm) {
 
         $scope.drawVertex = true;
         $scope.runInterval = 1;     // in seconds
@@ -80,17 +74,17 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
             graph.refresh();
         });
 
+
+        $scope.algorithm = algorithm;
+
         // -------------------------------
 
         $scope.reset = function () {
-            $scope.algorithm = new DijkstraAlgorithm(graph);
+            algorithm.reset();
         }
 
-        // reset algorithm when graph changes
-        graph.addListener($scope.reset);
-
         $scope.next = function () {
-            $scope.algorithm.nextStep();
+            algorithm.nextStep();
         }
 
         $scope.runnable = null;
@@ -108,7 +102,7 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
         // visualization stuff
 
         $scope.hlLine = function (line) {
-            return { 'line-highlight': $scope.algorithm.currentStep.lines.contains(line) };
+            return { 'line-highlight': algorithm.currentStep.lines.contains(line) };
         }
 
         // init
