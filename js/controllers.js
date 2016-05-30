@@ -82,35 +82,12 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
 
         // -------------------------------
 
-        /* Create Example Graph
-
-                 2
-            A ------- B
-            |         |
-            | 2       | 4
-            |         |
-            C ------- D-------E
-                1         3
-        */
-
-        var graphOld = new Graph();
-
-        var a = new Vertex("A");
-        var b = new Vertex("B");
-        var c = new Vertex("C");
-        var d = new Vertex("D");
-        var e = new Vertex("E");
-
-        graphOld.addVertices(a,b,c,d,e);
-        graphOld.addEdge(a, b, 2);
-        graphOld.addEdge(a, c, 2);
-        graphOld.addEdge(b, d, 4);
-        graphOld.addEdge(c, d, 1);
-        graphOld.addEdge(d, e, 3);
-
         $scope.reset = function () {
-            $scope.algorithmus = new DijkstraAlgorithmus(graphOld, a);
+            $scope.algorithmus = new DijkstraAlgorithmus(graph);
         }
+
+        // reset algorithmus when graph changes
+        graph.addListener($scope.reset);
 
         $scope.next = function () {
             $scope.algorithmus.nextStep();

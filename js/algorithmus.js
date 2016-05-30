@@ -1,41 +1,8 @@
 ﻿'use strict';
 
-function Vertex(name) {
-    // Vertex properties
-    this.name = name;
-    this.neighbors = [];
+function DijkstraAlgorithmus(graph) {
 
-    // State in algorithmus
-    this.prev = null;
-    this.dist = Number.POSITIVE_INFINITY;
-}
-
-function Graph() {
-    this.vertices = [];
-    this.addVertices = function () {
-        for (var i = 0; i < arguments.length; i++) {
-            this.vertices.push(arguments[i]);
-        }
-    }
-
-    this.addEdge = function (vertex1, vertex2, distance) {
-        vertex1.neighbors.push(
-            {
-                vertex: vertex2,
-                dist: distance
-            }
-        );
-
-        vertex2.neighbors.push(
-            {
-                vertex: vertex1,
-                dist: distance
-            }
-        );
-    }
-}
-
-function DijkstraAlgorithmus(graph, source) {
+    var source = graph.getStartVertex();
 
     // variables for algorithmus
     this.Q = null;
@@ -81,7 +48,7 @@ function DijkstraAlgorithmus(graph, source) {
             algorithmus.display.uNeighbors = '?';
         } else {
             algorithmus.display.uNeighbors = 'Neighbors of ' + algorithmus.u.name;
-            algorithmus.u.neighbors.forEach(function (edge, i) {
+            graph.getVertexNeighbors(algorithmus.u).forEach(function (edge, i) {
                 algorithmus.display.uNeighbors += "\n" + edge.vertex.name + "  dist: " + edge.dist;
             });
         }
@@ -97,7 +64,7 @@ function DijkstraAlgorithmus(graph, source) {
 
         // dist
         algorithmus.display.dist = "";
-        graph.vertices.forEach(function (v, i) {
+        graph.getVertices().forEach(function (v, i) {
             if (i != 0) { algorithmus.display.dist += "\n"; }
             algorithmus.display.dist += "dist[" + v.name + "] = " + v.dist;
         });
@@ -111,7 +78,7 @@ function DijkstraAlgorithmus(graph, source) {
 
         // prev
         algorithmus.display.prev = "";
-        graph.vertices.forEach(function (v, i) {
+        graph.getVertices().forEach(function (v, i) {
             if (i != 0) { algorithmus.display.prev += "\n"; }
             algorithmus.display.prev += "prev[" + v.name + "] = " + getName(v.prev);
         });
@@ -137,7 +104,7 @@ function DijkstraAlgorithmus(graph, source) {
             run: function () {
 
                 algorithmus.Q = [];                         //: create vertex set Q
-                graph.vertices.forEach(function (v) {       //: for each vertex v in Graph
+                graph.getVertices().forEach(function (v) {  //: for each vertex v in Graph
                     v.dist = Number.POSITIVE_INFINITY;      //:     dist[v] = INFINITY
                     v.prev = null;                          //:     dist[v] = UNDEFINED
                     algorithmus.Q.push(v);                  //:     add v to Q 
@@ -196,21 +163,22 @@ function DijkstraAlgorithmus(graph, source) {
             lines: [16],
             index: 0,
             run: function () {
-                var nextNeighborEdge = null;                           //:     for each neighbor v of u where v is still in Q
+                var nextNeighborInfo = null;                           //:     for each neighbor v of u where v is still in Q
 
                 // start at index where stopped the last time 
-                for (var i = this.index; i < algorithmus.u.neighbors.length; i++) {
-                    var edge = algorithmus.u.neighbors[i];
+                var uNeighbors = graph.getVertexNeighbors(algorithmus.u);
+                for (var i = this.index; i < uNeighbors.length; i++) {
+                    var neighborInfo = uNeighbors[i];
 
-                    if (algorithmus.Q.contains(edge.vertex)) {
+                    if (algorithmus.Q.contains(neighborInfo.vertex)) {
                         // this is our next neighbor
-                        nextNeighborEdge = edge;
+                        nextNeighborInfo = neighborInfo;
                         this.index = i + 1; // start with next item at next iteration
                         break; // exit loop
                     }
                 }
 
-                if (nextNeighborEdge == null) {
+                if (nextNeighborInfo == null) {
                     // no more neighbor found.
                     // reset index and exit loop (see next-function)
 
@@ -219,8 +187,8 @@ function DijkstraAlgorithmus(graph, source) {
                     algorithmus.lengthUV = null;
                 }
                 else {
-                    algorithmus.v = nextNeighborEdge.vertex;
-                    algorithmus.lengthUV = nextNeighborEdge.dist;
+                    algorithmus.v = nextNeighborInfo.vertex;
+                    algorithmus.lengthUV = nextNeighborInfo.dist;
                 }
             },
             next: function () {

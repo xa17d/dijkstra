@@ -36,6 +36,25 @@ angular.module('dijkstraApp')
         return edges;
     }
 
+    this.getVertexNeighbors = function (vertex) {
+        var result = [];
+        angular.forEach(edges, function (edge) {
+            if (edge.vertex1.id == vertex.id) {
+                result.push({
+                    vertex: edge.vertex2,
+                    dist: edge.weight
+                });
+            }
+            else if (edge.vertex2.id == vertex.id) {
+                result.push({
+                    vertex: edge.vertex1,
+                    dist: edge.weight
+                });
+            }
+        });
+        return result;
+    };
+
     this.getVertex = function(id) {
         var result = {};
         angular.forEach(vertices, function(vertex) {
@@ -51,6 +70,16 @@ angular.module('dijkstraApp')
         angular.forEach(edges, function(edge) {
             if(edge.id = id) {
                 result = edge;
+                return;
+            }
+        });
+        return result;
+    };
+    this.getStartVertex = function () {
+        var result = {};
+        angular.forEach(vertices, function (vertex) {
+            if (vertex.isStart) {
+                result = vertex;
                 return;
             }
         });
