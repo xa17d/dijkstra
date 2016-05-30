@@ -83,14 +83,14 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
         // -------------------------------
 
         $scope.reset = function () {
-            $scope.algorithmus = new DijkstraAlgorithmus(graph);
+            $scope.algorithm = new DijkstraAlgorithm(graph);
         }
 
-        // reset algorithmus when graph changes
+        // reset algorithm when graph changes
         graph.addListener($scope.reset);
 
         $scope.next = function () {
-            $scope.algorithmus.nextStep();
+            $scope.algorithm.nextStep();
         }
 
         $scope.runnable = null;
@@ -108,7 +108,7 @@ angular.module('dijkstraApp', ['ngMaterial', 'ngAnimate', 'ui.bootstrap'])
         // visualization stuff
 
         $scope.hlLine = function (line) {
-            return { 'line-highlight': $scope.algorithmus.currentStep.lines.contains(line) };
+            return { 'line-highlight': $scope.algorithm.currentStep.lines.contains(line) };
         }
 
         // init

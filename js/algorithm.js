@@ -1,17 +1,17 @@
 ﻿'use strict';
 
-function DijkstraAlgorithmus(graph) {
+function DijkstraAlgorithm(graph) {
 
     var source = graph.getStartVertex();
 
-    // variables for algorithmus
+    // variables for algorithm
     this.Q = null;
     this.u = null;
     this.v = null;
     this.lengthUV = null;
     this.alt = null;
 
-    // variables for algorithmus but prepared to display to the user
+    // variables for algorithm but prepared to display to the user
     this.display = {
         Q: '?',
         u: '?',
@@ -24,8 +24,8 @@ function DijkstraAlgorithmus(graph) {
         uNeighbors: '?'
     };
 
-    // make this algorithmus referencable in inner methods
-    var algorithmus = this;
+    // make this algorithm referencable in inner methods
+    var algorithm = this;
 
     // update display variables
     var updateDisplay = function () {
@@ -33,58 +33,58 @@ function DijkstraAlgorithmus(graph) {
         var getName = function (obj) { return obj == null ? "?" : obj.name; }
 
         // Q
-        algorithmus.display.Q = "[";
-        algorithmus.Q.forEach(function (v, i) {
-            if (i != 0) { algorithmus.display.Q += ", "; }
-            algorithmus.display.Q += getName(v);
+        algorithm.display.Q = "[";
+        algorithm.Q.forEach(function (v, i) {
+            if (i != 0) { algorithm.display.Q += ", "; }
+            algorithm.display.Q += getName(v);
         });
-        algorithmus.display.Q += "]";
+        algorithm.display.Q += "]";
 
         // u
-        algorithmus.display.u = getName(algorithmus.u);
+        algorithm.display.u = getName(algorithm.u);
 
         // uNeighbors
-        if (algorithmus.u == null) {
-            algorithmus.display.uNeighbors = '?';
+        if (algorithm.u == null) {
+            algorithm.display.uNeighbors = '?';
         } else {
-            algorithmus.display.uNeighbors = 'Neighbors of ' + algorithmus.u.name;
-            graph.getVertexNeighbors(algorithmus.u).forEach(function (edge, i) {
-                algorithmus.display.uNeighbors += "\n" + edge.vertex.name + "  dist: " + edge.dist;
+            algorithm.display.uNeighbors = 'Neighbors of ' + algorithm.u.name;
+            graph.getVertexNeighbors(algorithm.u).forEach(function (edge, i) {
+                algorithm.display.uNeighbors += "\n" + edge.vertex.name + "  dist: " + edge.dist;
             });
         }
 
         // v
-        algorithmus.display.v = getName(algorithmus.v);
+        algorithm.display.v = getName(algorithm.v);
 
         // lengthUV
-        algorithmus.display.lengthUV = (algorithmus.lengthUV == null ? "?" : algorithmus.lengthUV);
+        algorithm.display.lengthUV = (algorithm.lengthUV == null ? "?" : algorithm.lengthUV);
 
         // alt
-        algorithmus.display.alt = (algorithmus.alt == null ? "?" : algorithmus.alt);
+        algorithm.display.alt = (algorithm.alt == null ? "?" : algorithm.alt);
 
         // dist
-        algorithmus.display.dist = "";
+        algorithm.display.dist = "";
         graph.getVertices().forEach(function (v, i) {
-            if (i != 0) { algorithmus.display.dist += "\n"; }
-            algorithmus.display.dist += "dist[" + v.name + "] = " + v.dist;
+            if (i != 0) { algorithm.display.dist += "\n"; }
+            algorithm.display.dist += "dist[" + v.name + "] = " + v.dist;
         });
 
         // distQ
-        algorithmus.display.distQ = "";
-        algorithmus.Q.forEach(function (v, i) {
-            if (i != 0) { algorithmus.display.distQ += "\n"; }
-            algorithmus.display.distQ += "dist[" + v.name + "] = " + v.dist;
+        algorithm.display.distQ = "";
+        algorithm.Q.forEach(function (v, i) {
+            if (i != 0) { algorithm.display.distQ += "\n"; }
+            algorithm.display.distQ += "dist[" + v.name + "] = " + v.dist;
         });
 
         // prev
-        algorithmus.display.prev = "";
+        algorithm.display.prev = "";
         graph.getVertices().forEach(function (v, i) {
-            if (i != 0) { algorithmus.display.prev += "\n"; }
-            algorithmus.display.prev += "prev[" + v.name + "] = " + getName(v.prev);
+            if (i != 0) { algorithm.display.prev += "\n"; }
+            algorithm.display.prev += "prev[" + v.name + "] = " + getName(v.prev);
         });
     };
 
-    // Here are the steps defined for the algorithmus:
+    // Here are the steps defined for the algorithm:
     this.steps = {
         start: {
             /// Start ///
@@ -94,7 +94,7 @@ function DijkstraAlgorithmus(graph) {
                 // nothing to do.
             },
             next: function () {
-                return algorithmus.steps.init;
+                return algorithm.steps.init;
             }
         },
         init: {
@@ -103,16 +103,16 @@ function DijkstraAlgorithmus(graph) {
             lines: [3, 4, 5, 6, 7, 8, 9, 10],
             run: function () {
 
-                algorithmus.Q = [];                         //: create vertex set Q
+                algorithm.Q = [];                         //: create vertex set Q
                 graph.getVertices().forEach(function (v) {  //: for each vertex v in Graph
                     v.dist = Number.POSITIVE_INFINITY;      //:     dist[v] = INFINITY
                     v.prev = null;                          //:     dist[v] = UNDEFINED
-                    algorithmus.Q.push(v);                  //:     add v to Q 
+                    algorithm.Q.push(v);                  //:     add v to Q 
                 });                                         //:
                 source.dist = 0;                            //: dist[source] = 0
             },
             next: function () {
-                return algorithmus.steps.whileloop;
+                return algorithm.steps.whileloop;
             }
         },
         whileloop: {
@@ -123,10 +123,10 @@ function DijkstraAlgorithmus(graph) {
                 // nothing to do
             },
             next: function () {
-                if (algorithmus.Q.length == 0)              //: while Q is not empty
-                { return algorithmus.steps.finish; }
+                if (algorithm.Q.length == 0)              //: while Q is not empty
+                { return algorithm.steps.finish; }
                 else
-                { return algorithmus.steps.getmin; }
+                { return algorithm.steps.getmin; }
             }
         },
         getmin: {
@@ -134,16 +134,16 @@ function DijkstraAlgorithmus(graph) {
             name: 'getmin',
             lines: [13],
             run: function () {
-                var u = algorithmus.Q[0];                   //:  u = vertex in Q with min dist[u]
-                algorithmus.Q.forEach(function (v) {
+                var u = algorithm.Q[0];                   //:  u = vertex in Q with min dist[u]
+                algorithm.Q.forEach(function (v) {
                     if (v.dist < u.dist) {
                         u = v;
                     }
                 });
-                algorithmus.u = u;
+                algorithm.u = u;
             },
             next: function () {
-                return algorithmus.steps.remove;
+                return algorithm.steps.remove;
             }
         },
         remove: {
@@ -151,10 +151,10 @@ function DijkstraAlgorithmus(graph) {
             name: 'remove',
             lines: [14],
             run: function () {
-                algorithmus.Q.remove(algorithmus.u);        //:     remove u from Q 
+                algorithm.Q.remove(algorithm.u);        //:     remove u from Q 
             },
             next: function () {
-                return algorithmus.steps.forneighbor;
+                return algorithm.steps.forneighbor;
             }
         },
         forneighbor: {
@@ -166,11 +166,11 @@ function DijkstraAlgorithmus(graph) {
                 var nextNeighborInfo = null;                           //:     for each neighbor v of u where v is still in Q
 
                 // start at index where stopped the last time 
-                var uNeighbors = graph.getVertexNeighbors(algorithmus.u);
+                var uNeighbors = graph.getVertexNeighbors(algorithm.u);
                 for (var i = this.index; i < uNeighbors.length; i++) {
                     var neighborInfo = uNeighbors[i];
 
-                    if (algorithmus.Q.contains(neighborInfo.vertex)) {
+                    if (algorithm.Q.contains(neighborInfo.vertex)) {
                         // this is our next neighbor
                         nextNeighborInfo = neighborInfo;
                         this.index = i + 1; // start with next item at next iteration
@@ -183,22 +183,22 @@ function DijkstraAlgorithmus(graph) {
                     // reset index and exit loop (see next-function)
 
                     this.index = 0;
-                    algorithmus.v = null;
-                    algorithmus.lengthUV = null;
+                    algorithm.v = null;
+                    algorithm.lengthUV = null;
                 }
                 else {
-                    algorithmus.v = nextNeighborInfo.vertex;
-                    algorithmus.lengthUV = nextNeighborInfo.dist;
+                    algorithm.v = nextNeighborInfo.vertex;
+                    algorithm.lengthUV = nextNeighborInfo.dist;
                 }
             },
             next: function () {
-                if (algorithmus.v == null) {
+                if (algorithm.v == null) {
                     // no neighbor found -> exit loop
-                    return algorithmus.steps.whileloop;
+                    return algorithm.steps.whileloop;
                 }
                 else {
                     // handle next neighbor
-                    return algorithmus.steps.calcalt;
+                    return algorithm.steps.calcalt;
                 }
             }
         },
@@ -207,10 +207,10 @@ function DijkstraAlgorithmus(graph) {
             name: 'calcalt',
             lines: [17],
             run: function () {
-                algorithmus.alt = algorithmus.u.dist + algorithmus.lengthUV; //:         alt = dist[u] + length(u, v)
+                algorithm.alt = algorithm.u.dist + algorithm.lengthUV; //:         alt = dist[u] + length(u, v)
             },
             next: function () {
-                return algorithmus.steps.comparedist;
+                return algorithm.steps.comparedist;
             }
         },
         comparedist: {
@@ -222,10 +222,10 @@ function DijkstraAlgorithmus(graph) {
                 // everything decides in next-function
             },
             next: function () {
-                if (algorithmus.alt < algorithmus.v.dist)         //:         if alt < dist[v]
-                { return algorithmus.steps.assigndist; }
+                if (algorithm.alt < algorithm.v.dist)         //:         if alt < dist[v]
+                { return algorithm.steps.assigndist; }
                 else
-                { return algorithmus.steps.forneighbor; }
+                { return algorithm.steps.forneighbor; }
             }
         },
         assigndist: {
@@ -233,15 +233,15 @@ function DijkstraAlgorithmus(graph) {
             name: 'assigndist',
             lines: [19, 20],
             run: function () {
-                algorithmus.v.dist = algorithmus.alt;
-                algorithmus.v.prev = algorithmus.u;
+                algorithm.v.dist = algorithm.alt;
+                algorithm.v.prev = algorithm.u;
             },
             next: function () {
-                return algorithmus.steps.forneighbor;
+                return algorithm.steps.forneighbor;
             }
         },
         finish: {
-            /// Return / Algorithmus terminates ///
+            /// Return / algorithm terminates ///
             name: 'finish',
             lines: [22],
             run: function () {
@@ -249,7 +249,7 @@ function DijkstraAlgorithmus(graph) {
             },
             next: function () {
                 // there is no next, so just stay here
-                return algorithmus.steps.finish;
+                return algorithm.steps.finish;
             }
         }
     };

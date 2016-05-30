@@ -42,13 +42,13 @@ angular.module('dijkstraApp')
             if (edge.vertex1.id == vertex.id) {
                 result.push({
                     vertex: edge.vertex2,
-                    dist: edge.weight
+                    dist: edge.weight * 1.0 // ensure it's a Number (sometimes the user input is stored as String in the variable)
                 });
             }
             else if (edge.vertex2.id == vertex.id) {
                 result.push({
                     vertex: edge.vertex1,
-                    dist: edge.weight
+                    dist: edge.weight * 1.0 // ensure it's a Number (sometimes the user input is stored as String in the variable)
                 });
             }
         });

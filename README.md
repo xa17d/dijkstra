@@ -1,2 +1,2 @@
 # dijkstra
-Web-based visualization for the dijkstra-algorithmus.
+Web-based visualization for the dijkstra-algorithm.
