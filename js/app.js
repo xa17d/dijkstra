@@ -3,5 +3,5 @@
     .config(function ($mdThemingProvider) {
         $mdThemingProvider.theme('default')
             .primaryPalette('green')
-            .accentPalette('amber');
+            .accentPalette('orange');
     });

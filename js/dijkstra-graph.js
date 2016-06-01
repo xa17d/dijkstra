@@ -134,6 +134,16 @@ angular.module('dijkstraApp')
     this.clear = function() {
         vertices = [];
         edges = [];
+        notifyListeners();
+    };
+
+    this.export = function () {
+        alert(
+            JSON.stringify({
+                vertices: vertices,
+                edges: edges
+            })
+            );
     };
 
     this.equals = function (o1, o2) {

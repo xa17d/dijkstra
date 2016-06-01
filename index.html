@@ -23,6 +23,7 @@
     <script src="js/helper.js"></script>
     <script src="js/app.js"></script>
     <script src="js/varDirective.js"></script>
+    <script src="js/dijkstra-colors.js"></script>
     <script src="js/dijkstra-graph.js"></script>
     <script src="js/dijkstra-draw-directive.js"></script>
     <script src="js/dijkstra-algorithm.js"></script>
@@ -203,7 +204,7 @@
                                 </div>
                             </div>
                             <span flex="10"></span>
-                            <md-button ng-click="reset()" ng-disabled="runnable !== null" class="md-accent">Reset</md-button>
+                            <md-button ng-click="resetAlgorithm()" ng-disabled="runnable !== null" class="md-accent">Reset</md-button>
                             <md-button ng-click="next()" ng-disabled="runnable !== null" class="md-primary">Next</md-button>
                             <md-button ng-show="runnable === null" ng-click="run()" class="md-raised md-primary">Run</md-button>
                             <md-button ng-hide="runnable === null" ng-click="stopRun()" class="md-raised md-primary">Stop</md-button>
@@ -272,6 +273,8 @@
                             </pre>
                         </md-card-content>
                         <md-card-actions layout="row" layout-align="end center">
+                            <md-button ng-click="resetGraph()" ng-disabled="runnable !== null" class="md-accent">Reset</md-button>
+                            <span flex="10"></span>
                             Edges
                             <md-switch ng-model="drawVertex" aria-label="Draw Vertices or Edges"></md-switch>
                             Vertices

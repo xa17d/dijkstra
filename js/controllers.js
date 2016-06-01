@@ -79,34 +79,35 @@ angular.module('dijkstraApp')
 
         // -------------------------------
 
-        $scope.reset = function () {
+        $scope.resetGraph = function () {
+            graph.clear();
+        };
+
+        $scope.resetAlgorithm = function () {
             algorithm.reset();
-        }
+        };
 
         $scope.next = function () {
             algorithm.nextStep();
-        }
+        };
 
         $scope.runnable = null;
         $scope.run = function () {
             $scope.runnable = $interval(function () {
                 $scope.next();
             }, $scope.runInterval * 1000);
-        }
+        };
 
-        $scope.stopRun = function() {
+        $scope.stopRun = function () {
             $interval.cancel($scope.runnable);
             $scope.runnable = null;
-        }
+        };
 
         // visualization stuff
 
         $scope.hlLine = function (line) {
             return { 'line-highlight': algorithm.currentStep.lines.contains(line) };
-        }
-
-        // init
-        $scope.reset();
+        };
 
     }])
 
@@ -119,6 +120,7 @@ angular.module('dijkstraApp')
 
         $scope.export = function () {
 
+            graph.export();
             // TODO
         }
     }])
