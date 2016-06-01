@@ -2,7 +2,7 @@
 
 angular.module('dijkstraApp')
 
-.directive('dijkstraDraw', ['graph', 'algorithm', function (graph, algorithm) {
+.directive('dijkstraDraw', ['graph', 'algorithm', 'colors', function (graph, algorithm, colors) {
     return {
         restrict: "A",
         scope: true,
@@ -182,10 +182,23 @@ angular.module('dijkstraApp')
                 });
                 */
 
-                
-                var algorithmEdge = null;
-                if (algorithm.u != null && algorithm.v != null) {
-                    algorithmEdge = graph.getEdgeFromVertexToVertex(algorithm.u, algorithm.v);
+                if (algorithm.isRunning()) {
+                    angular.forEach(graph.getEdges(), function (edge) {
+                        edge.style = colors.visible;
+                    });
+
+                    angular.forEach(graph.getVertices(), function (vertex) {
+                        vertex.style = colors.visible;
+                    });
+                }
+                else {
+                    angular.forEach(graph.getEdges(), function (edge) {
+                        edge.style = (selectedEdge !== null && graph.equals(edge, selectedEdge)) ? colors.selected : colors.visible;
+                    });
+
+                    angular.forEach(graph.getVertices(), function (vertex) {
+                        vertex.style = (selectedVertex !== null && graph.equals(vertex, selectedVertex)) ? colors.selected : colors.visible;
+                    });
                 }
 
                 // draw edges
@@ -194,12 +207,7 @@ angular.module('dijkstraApp')
 
                     context.moveTo(edge.vertex1.coordinateX, edge.vertex1.coordinateY);
                     context.lineTo(edge.vertex2.coordinateX, edge.vertex2.coordinateY);
-                    context.strokeStyle = (selectedEdge !== null && graph.equals(edge, selectedEdge)) ? '#FFD740' : "#4CAF50";        //hex for rgb(255,215,64) and rgb(76,175,80)
-
-                    // TODO: please review
-                    if (graph.equals(edge, algorithmEdge)) {
-                        context.strokeStyle = "#0000ff";
-                    }
+                    context.strokeStyle = edge.style.edge;
 
                     if(!isNaN(edge.weight)) {
                         context.font = "16px Century Gothic";
@@ -216,17 +224,7 @@ angular.module('dijkstraApp')
                     context.beginPath();
 
 
-                    if (graph.equals(vertex, algorithm.u)) { // TODO: please review
-                        context.arc(vertex.coordinateX, vertex.coordinateY, nodeRadius, 0, 2 * Math.PI, false);
-                        context.fillStyle = '#FF0000';
-                        context.fill();
-                    }
-                    else if (graph.equals(vertex, algorithm.v)) { // TODO: please review
-                        context.arc(vertex.coordinateX, vertex.coordinateY, nodeRadius, 0, 2 * Math.PI, false);
-                        context.fillStyle = '#0000FF';
-                        context.fill();
-                    }
-                    else if(selectedVertex !== null && vertex.coordinateX === selectedVertex.coordinateX && vertex.coordinateY === selectedVertex.coordinateY) {
+                    if(selectedVertex !== null && vertex.coordinateX === selectedVertex.coordinateX && vertex.coordinateY === selectedVertex.coordinateY) {
                         context.arc(vertex.coordinateX, vertex.coordinateY, nodeRadius, 0, 2 * Math.PI, false);
                         context.fillStyle = '#FFD740';
                         context.fill();

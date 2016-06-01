@@ -284,7 +284,11 @@ angular.module('dijkstraApp')
             this.currentStep.run(); // execute
             updateDisplay(); // update display variables
             notifyListeners();
-        }
+        };
+
+        this.isRunning = function () {
+            return this.currentStep != this.steps.start;
+        };
 
         this.reset();
 
