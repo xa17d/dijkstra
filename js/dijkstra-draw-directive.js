@@ -188,7 +188,13 @@ angular.module('dijkstraApp')
                     });
 
                     angular.forEach(graph.getVertices(), function (vertex) {
-                        vertex.style = colors.visible;
+                        if (graph.equals(vertex, algorithm.u)) {
+                            vertex.style = colors.emphasized;
+                        } else if (graph.equals(vertex, algorithm.v)) {
+                            vertex.style = colors.highlighted;
+                        } else {
+                            vertex.style = colors.visible;
+                        }
                     });
                 }
                 else {
@@ -211,7 +217,7 @@ angular.module('dijkstraApp')
 
                     if(!isNaN(edge.weight)) {
                         context.font = "16px Century Gothic";
-                        context.fillStyle = (selectedEdge !== null && graph.equals(edge, selectedEdge)) ? '#FFD740' : "#4CAF50";
+                        context.fillStyle = edge.style.edge;
                         context.textAlign = "center";
                         context.fillText(edge.weight, edge.vertex1.coordinateX + ((edge.vertex2.coordinateX - edge.vertex1.coordinateX) / 2) + 30, edge.vertex1.coordinateY + ((edge.vertex2.coordinateY - edge.vertex1.coordinateY) / 2) - 16);
                     }
@@ -223,20 +229,12 @@ angular.module('dijkstraApp')
                 angular.forEach(graph.getVertices(), function(vertex) {
                     context.beginPath();
 
-
-                    if(selectedVertex !== null && vertex.coordinateX === selectedVertex.coordinateX && vertex.coordinateY === selectedVertex.coordinateY) {
-                        context.arc(vertex.coordinateX, vertex.coordinateY, nodeRadius, 0, 2 * Math.PI, false);
-                        context.fillStyle = '#FFD740';
-                        context.fill();
-                    }
-                    else {
-                        context.arc(vertex.coordinateX, vertex.coordinateY, nodeRadius, 0, 2 * Math.PI, false);
-                        context.fillStyle = '#dddddd';
-                        context.fill();
-                    }
+                    context.arc(vertex.coordinateX, vertex.coordinateY, nodeRadius, 0, 2 * Math.PI, false);
+                    context.fillStyle = vertex.style.background;
+                    context.fill();
 
                     context.lineWidth = nodeStrokeWidth;
-                    context.strokeStyle = '#000000';
+                    context.strokeStyle = vertex.style.stroke;
                     context.stroke();
 
                     context.font = "14px Century Gothic";
