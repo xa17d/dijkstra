@@ -45,12 +45,14 @@ angular.module('dijkstraApp')
             if (graph.equals(edge.vertex1, vertex)) {
                 result.push({
                     vertex: edge.vertex2,
+                    edge: edge,
                     dist: edge.weight * 1.0 // ensure it's a Number (sometimes the user input is stored as String in the variable)
                 });
             }
             else if (graph.equals(edge.vertex2, vertex)) {
                 result.push({
                     vertex: edge.vertex1,
+                    edge: edge,
                     dist: edge.weight * 1.0 // ensure it's a Number (sometimes the user input is stored as String in the variable)
                 });
             }
@@ -93,6 +95,16 @@ angular.module('dijkstraApp')
         var result = {};
         angular.forEach(vertices, function (vertex) {
             if (vertex.isStart) {
+                result = vertex;
+                return;
+            }
+        });
+        return result;
+    };
+    this.getEndVertex = function () {
+        var result = {};
+        angular.forEach(vertices, function (vertex) {
+            if (vertex.isEnd) {
                 result = vertex;
                 return;
             }

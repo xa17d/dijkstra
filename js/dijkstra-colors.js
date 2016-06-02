@@ -5,9 +5,9 @@ angular.module('dijkstraApp')
 .provider('colors', function () {
 
     this.faded = {
-        stroke: "#000000",
-        background: "#000000",
-        edge: "#000000"
+        stroke: "#cccccc",
+        background: "#dddddd",
+        edge: "#cccccc"
     };
 
     this.selected = {

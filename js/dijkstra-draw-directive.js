@@ -167,6 +167,114 @@ angular.module('dijkstraApp')
                 }
             };
 
+            function setStyleForAll(style) {
+                angular.forEach(graph.getEdges(), function (edge) {
+                    edge.style = style;
+                });
+
+                angular.forEach(graph.getVertices(), function (vertex) {
+                    vertex.style = style;
+                });
+            }
+
+            function applyAlgorithmStyle() {
+
+                var step = algorithm.currentStep.name;
+                
+                if (step == "init") {
+                    /// Init ///
+                    setStyleForAll(colors.visible);
+                }
+                else if (step == "whileloop") {
+                    /// while loop ///
+                    // * set only vertices in Q visible
+
+                    // set all faded
+                    setStyleForAll(colors.faded);
+
+                    // set all vertices in Q visible
+                    angular.forEach(algorithm.Q, function (vertex) {
+                        vertex.style = colors.visible;
+                    });
+                    
+                }
+                else if (step == "getmin" || step == "remove") {
+                    /// while loop, remove ///
+                    // * set only vertices in Q visible
+                    // * emphasize item u with min dist[u]
+
+                    // set all faded
+                    setStyleForAll(colors.faded);
+
+                    // set all vertices in Q visible
+                    angular.forEach(algorithm.Q, function (vertex) {
+                        vertex.style = colors.visible;
+                    });
+
+                    // emphasize u (which is min dist[u])
+                    algorithm.u.style = colors.emphasized;
+                }
+                else if (step == "forneighbor" || step == "calcalt" || step == "comparedist" || step == "assigndist") {
+                    /// forneighbor ///
+                    // * set only vertices in Q visible
+                    // * emphasize item u with min dist[u]
+
+                    // set all faded
+                    setStyleForAll(colors.faded);
+
+                    // set u emphasized
+                    algorithm.u.style = colors.emphasized;
+
+                    // set neighbors visible
+                    var neighbors = graph.getVertexNeighbors(algorithm.u);
+                    angular.forEach(neighbors, function (n) {
+                        // only neighbors still in Q are important
+                        if (algorithm.Q.contains(n.vertex)) {
+                            n.vertex.style = colors.visible;
+                            n.edge.style = colors.visible;
+                        }
+                    });
+
+                    // set v emphasized
+                    if (algorithm.v != null) { // can be null if there is no other neighbor
+                        algorithm.v.style = colors.highlighted;
+                    }
+                }
+                else if (step == "finish") {
+                    /// finished ///
+                    // * emphasize shortest path
+
+                    // set all faded
+                    setStyleForAll(colors.faded);
+
+                    var v = graph.getEndVertex();
+
+                    // TODO: what if there is no path?
+
+                    while (v != null) {
+
+                        if (v.isStart || v.isEnd) {
+                            v.style = colors.highlighted;
+                        }
+                        else {
+                            v.style = colors.emphasized;
+                        }
+
+                        if (v.prev != null) {
+                            var edge = graph.getEdgeFromVertexToVertex(v.prev, v);
+                            edge.style = colors.emphasized;
+                        }
+
+                        v = v.prev;
+                    }
+                }
+                else {
+                    console.log("unknown step '" + step + "' for applyAlgorithmStyle()");
+
+                    setStyleForAll(colors.faded);
+                }
+            }
+
             function redrawCanvas() {
 
                 //clear canvas
@@ -183,21 +291,10 @@ angular.module('dijkstraApp')
                 */
 
                 if (algorithm.isRunning()) {
-                    angular.forEach(graph.getEdges(), function (edge) {
-                        edge.style = colors.visible;
-                    });
-
-                    angular.forEach(graph.getVertices(), function (vertex) {
-                        if (graph.equals(vertex, algorithm.u)) {
-                            vertex.style = colors.emphasized;
-                        } else if (graph.equals(vertex, algorithm.v)) {
-                            vertex.style = colors.highlighted;
-                        } else {
-                            vertex.style = colors.visible;
-                        }
-                    });
+                    applyAlgorithmStyle();
                 }
                 else {
+
                     angular.forEach(graph.getEdges(), function (edge) {
                         edge.style = (selectedEdge !== null && graph.equals(edge, selectedEdge)) ? colors.selected : colors.visible;
                     });
