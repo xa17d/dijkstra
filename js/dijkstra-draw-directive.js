@@ -6,7 +6,7 @@ angular.module('dijkstraApp')
     return {
         restrict: "A",
         scope: true,
-        link: function(scope, element) {
+        link: function (scope, element) {
             var context = element[0].getContext('2d');
 
             // coordinates
@@ -42,7 +42,7 @@ angular.module('dijkstraApp')
 
 
                 // vertex draw mode?
-                if(scope.$parent.drawVertex) {
+                if (scope.$parent.drawVertex) {
                     // is it a existing vertex?
                     selectedVertex = null;
 
@@ -64,7 +64,7 @@ angular.module('dijkstraApp')
                         });
                     }
                 }
-                // edge draw mode
+                    // edge draw mode
                 else {
                     var currentVertex = null;
                     selectedEdge = null;
@@ -81,7 +81,7 @@ angular.module('dijkstraApp')
 
                     // vertex was clicked
                     if (currentVertex !== null) {
-                        if(selectedVertex === null) {
+                        if (selectedVertex === null) {
                             selectedVertex = currentVertex;
                         }
                         else {
@@ -95,10 +95,10 @@ angular.module('dijkstraApp')
                             selectedVertex = null;
                         }
                     }
-                    // probably edge was clicked
+                        // probably edge was clicked
                     else {
                         angular.forEach(edgePixels, function (edgePixel) {
-                            if(coordinateX === edgePixel.coordinateX && coordinateY === edgePixel.coordinateY) {
+                            if (coordinateX === edgePixel.coordinateX && coordinateY === edgePixel.coordinateY) {
                                 selectedEdge = edgePixel.edge;
                                 scope.$parent.toggleEdge(selectedEdge);
                                 return;
@@ -109,7 +109,7 @@ angular.module('dijkstraApp')
 
                 redrawCanvas();
             });
-            
+
             graph.addListener(redrawCanvas);
             algorithm.addListener(redrawCanvas);
 
@@ -117,7 +117,7 @@ angular.module('dijkstraApp')
             function verticesDistance(vertex1, vertex2) {
                 var dx = vertex1.coordinateX - vertex2.coordinateX;
                 var dy = vertex1.coordinateY - vertex2.coordinateY;
-                return Math.sqrt(dx*dx + dy*dy);
+                return Math.sqrt(dx * dx + dy * dy);
             }
 
             // see https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
@@ -129,7 +129,7 @@ angular.module('dijkstraApp')
 
                 // TODO bugfix
 
-                if(x0 > x1) {
+                if (x0 > x1) {
                     var x1Old = x1;
                     x1 = x0;
                     x0 = x1Old;
@@ -145,20 +145,20 @@ angular.module('dijkstraApp')
                 var deltaError = (deltaX !== 0) ? Math.abs(deltaY / deltaX) : 50;
 
                 var y = y0;
-                for(var x = x0; x <= x1; x++) {
+                for (var x = x0; x <= x1; x++) {
 
                     // morph pixel
-                    for(var i = -2; i <= 2; i++) {
-                        for(var j = -2; j <= 2; j++) {
+                    for (var i = -2; i <= 2; i++) {
+                        for (var j = -2; j <= 2; j++) {
                             edgePixels.push({
-                                coordinateX: x+i,
-                                coordinateY: y+j,
+                                coordinateX: x + i,
+                                coordinateY: y + j,
                                 edge: edge
                             });
                         }
                     }
 
-                    if(deltaError >= 0) {
+                    if (deltaError >= 0) {
                         y++;
                         deltaError = deltaError - deltaX;
                     }
@@ -180,10 +180,22 @@ angular.module('dijkstraApp')
             function applyAlgorithmStyle() {
 
                 var step = algorithm.currentStep.name;
-                
+
+                // reset info text of all vertices
+                angular.forEach(graph.getVertices(), function (vertex) {
+                    vertex.info = null;
+                });
+
                 if (step == "init") {
                     /// Init ///
                     setStyleForAll(colors.visible);
+
+                    angular.forEach(graph.getVertices(), function (vertex) {
+                        vertex.info = [
+                                "dist[" + vertex.name + "] = " + vertex.dist,
+                                "prev[" + vertex.name + "] = " + (vertex.prev == null ? "?" : vertex.prev.name)
+                        ];
+                    });
                 }
                 else if (step == "whileloop") {
                     /// while loop ///
@@ -196,7 +208,7 @@ angular.module('dijkstraApp')
                     angular.forEach(algorithm.Q, function (vertex) {
                         vertex.style = colors.visible;
                     });
-                    
+
                 }
                 else if (step == "getmin" || step == "remove") {
                     /// while loop, remove ///
@@ -240,7 +252,7 @@ angular.module('dijkstraApp')
                         algorithm.v.style = colors.highlighted;
                     }
 
-                    if (step == "calcalt") {
+                    if (step == "calcalt" || step == "comparedist") {
                         // highlight path
 
                         var edge = graph.getEdgeFromVertexToVertex(algorithm.v, algorithm.u);
@@ -255,6 +267,17 @@ angular.module('dijkstraApp')
 
                             v = v.prev;
                         }
+                    }
+
+                    if (step == "calcalt" || step == "comparedist" || step == "assigndist") {
+                        // info on u
+                        algorithm.u.info = ["dist[" + algorithm.u.name + "] = " + algorithm.u.dist];
+
+                        // info on v
+                        algorithm.v.info = [
+                            "alt = " + algorithm.u.dist + " + " + algorithm.lengthUV + " = " + algorithm.alt,
+                            "dist[" + algorithm.v.name + "] = " + algorithm.v.dist
+                        ];
                     }
                 }
                 else if (step == "finish") {
@@ -322,14 +345,14 @@ angular.module('dijkstraApp')
                 }
 
                 // draw edges
-                angular.forEach(graph.getEdges(), function(edge) {
+                angular.forEach(graph.getEdges(), function (edge) {
                     context.beginPath();
 
                     context.moveTo(edge.vertex1.coordinateX, edge.vertex1.coordinateY);
                     context.lineTo(edge.vertex2.coordinateX, edge.vertex2.coordinateY);
                     context.strokeStyle = edge.style.edge;
 
-                    if(!isNaN(edge.weight)) {
+                    if (!isNaN(edge.weight)) {
                         context.font = "16px Century Gothic";
                         context.fillStyle = edge.style.edge;
                         context.textAlign = "center";
@@ -340,7 +363,7 @@ angular.module('dijkstraApp')
                 });
 
                 // draw vertices
-                angular.forEach(graph.getVertices(), function(vertex) {
+                angular.forEach(graph.getVertices(), function (vertex) {
                     context.beginPath();
 
                     context.arc(vertex.coordinateX, vertex.coordinateY, nodeRadius, 0, 2 * Math.PI, false);
@@ -356,18 +379,29 @@ angular.module('dijkstraApp')
                     context.textAlign = "center";
                     context.fillText(vertex.name, vertex.coordinateX, vertex.coordinateY - nodeRadius * 1.5);
 
-                    if(vertex.isStart) {
+                    if (vertex.isStart) {
                         context.font = "16px Century Gothic";
                         context.fillStyle = "#4CAF50";
                         context.textAlign = "center";
                         context.fillText('S', vertex.coordinateX, vertex.coordinateY + 6);
                     }
 
-                    if(vertex.isEnd) {
+                    if (vertex.isEnd) {
                         context.font = "16px Century Gothic";
                         context.fillStyle = "#4CAF50";
                         context.textAlign = "center";
                         context.fillText('E', vertex.coordinateX, vertex.coordinateY + 6);
+                    }
+
+                    if (vertex.info != null) {
+                        context.font = "12px Century Gothic";
+                        context.fillStyle = "#4CAF50";
+                        context.textAlign = "center";
+
+                        // for multiline text
+                        for (var i = 0; i < vertex.info.length; i++) {
+                            context.fillText(vertex.info[i], vertex.coordinateX, vertex.coordinateY + nodeRadius + 14 + 14 * i);
+                        }
                     }
 
                     context.stroke();
