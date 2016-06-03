@@ -239,6 +239,23 @@ angular.module('dijkstraApp')
                     if (algorithm.v != null) { // can be null if there is no other neighbor
                         algorithm.v.style = colors.highlighted;
                     }
+
+                    if (step == "calcalt") {
+                        // highlight path
+
+                        var edge = graph.getEdgeFromVertexToVertex(algorithm.v, algorithm.u);
+                        edge.style = colors.highlighted;
+
+                        var v = algorithm.u;
+                        while (v != null) {
+                            if (v.prev != null) {
+                                var edge = graph.getEdgeFromVertexToVertex(v.prev, v);
+                                edge.style = colors.highlighted;
+                            }
+
+                            v = v.prev;
+                        }
+                    }
                 }
                 else if (step == "finish") {
                     /// finished ///
