@@ -74,7 +74,7 @@ angular.module('dijkstraApp')
     this.getVertex = function(id) {
         var result = {};
         angular.forEach(vertices, function(vertex) {
-            if(vertex.id = id) {
+            if(vertex.id == id) {
                 result = vertex;
                 return;
             }
@@ -84,7 +84,7 @@ angular.module('dijkstraApp')
     this.getEdge = function(id) {
         var result = {};
         angular.forEach(edges, function(edge) {
-            if(edge.id = id) {
+            if(edge.id == id) {
                 result = edge;
                 return;
             }
@@ -150,12 +150,30 @@ angular.module('dijkstraApp')
     };
 
     this.export = function () {
-        alert(
-            JSON.stringify({
-                vertices: vertices,
-                edges: edges
-            })
-            );
+        return
+            "TODO";
+
+        // TODO: remove style information before exporting
+    };
+    this.import = function (json) {
+        var data = JSON.parse(json);
+
+        vertices = data.vertices;
+        edges = [];
+
+        var graph = this;
+        data.edges.forEach(function (e) {
+            var newEdge = {
+                weight: e.weight,
+                vertex1: graph.getVertex(e.vertex1),
+                vertex2: graph.getVertex(e.vertex2),
+            };
+            graph.addEdge(newEdge);
+        });
+
+        // TODO: data validation?
+
+        notifyListeners();
     };
 
     this.equals = function (o1, o2) {
