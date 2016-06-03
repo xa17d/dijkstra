@@ -140,13 +140,14 @@ angular.module('dijkstraApp')
 
         $scope.import = function () {
 
-            //TODO
+            //TODO beautiful dialog
+            graph.import(prompt("Paste Graph-JSON", ""))
         };
 
         $scope.export = function () {
 
             alert(graph.export());
-            // TODO
+            // TODO beautiful dialog
         }
     }])
 

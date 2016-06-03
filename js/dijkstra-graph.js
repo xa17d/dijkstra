@@ -168,9 +168,32 @@ angular.module('dijkstraApp')
     };
 
     this.export = function () {
-        // TODO: remove style information before exporting
-        return
-            "TODO";
+        // remove style information and unneccessary properties before exporting
+        var data = {
+            vertices: [],
+            edges: []
+        };
+
+        vertices.forEach(function (v) {
+            data.vertices.push({
+                id: v.id,
+                coordinateX: v.coordinateX,
+                coordinateY: v.coordinateY,
+                name: v.name,
+                isStart: v.isStart,
+                isEnd: v.isEnd
+            });
+        });
+
+        edges.forEach(function (e) {
+            data.edges.push({
+                vertex1: e.vertex1.id,
+                vertex2: e.vertex2.id,
+                weight: e.weight
+            });
+        });
+
+        return JSON.stringify(data); //, null, 2);
     };
     this.import = function (json) {
         var data = JSON.parse(json);
