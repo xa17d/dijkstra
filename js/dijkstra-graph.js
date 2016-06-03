@@ -22,7 +22,14 @@ angular.module('dijkstraApp')
         //notifyListeners();        //no notifier necessary, because 'setEnd()' also notifies listeners after finishing
     };
     this.addEdge = function(edge) {
-        // TODO check for duplicates
+        // check for loop
+        if (this.equals(edge.vertex1, edge.vertex2)) {
+            return; // do nothing, it's a loop
+        }
+        
+        if (this.getEdgeFromVertexToVertex(edge.vertex1, edge.vertex2) != null) {
+            return; // do nothing, an edge between these two vertices already exists.
+        }
 
         edge.id = getNewId();
         edge.name = 'E' + edge.id;
@@ -161,10 +168,9 @@ angular.module('dijkstraApp')
     };
 
     this.export = function () {
+        // TODO: remove style information before exporting
         return
             "TODO";
-
-        // TODO: remove style information before exporting
     };
     this.import = function (json) {
         var data = JSON.parse(json);
