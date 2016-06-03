@@ -7,38 +7,38 @@ angular.module('dijkstraApp')
         $scope.drawVertex = true;
         $scope.runInterval = 1;     // in seconds
 
-        $scope.toggleMenu = function() {
+        $scope.toggleMenu = function () {
             $mdSidenav('menu').toggle();
         }
-        $scope.isOpenMenu = function(){
+        $scope.isOpenMenu = function () {
             return $mdSidenav('menu').isOpen();
         };
 
         $scope.activeVertex = null;
-        $scope.toggleVertex = function(vertex) {
+        $scope.toggleVertex = function (vertex) {
             $scope.activeVertex = (typeof vertex !== 'undefined') ? vertex : null;
             $mdSidenav('vertex').toggle();
         }
-        $scope.isOpenVertex = function(){
+        $scope.isOpenVertex = function () {
             return $mdSidenav('vertex').isOpen();
         };
 
         $scope.activeEdge = null;
-        $scope.toggleEdge = function(edge) {
+        $scope.toggleEdge = function (edge) {
             $scope.activeEdge = (typeof edge !== 'undefined') ? edge : null;
             $mdSidenav('edge').toggle();
         }
-        $scope.isOpenEdge = function(){
+        $scope.isOpenEdge = function () {
             return $mdSidenav('edge').isOpen();
         };
 
         var originatorEv;
-        $scope.openMore = function($mdOpenMenu, ev) {
+        $scope.openMore = function ($mdOpenMenu, ev) {
             originatorEv = ev;
             $mdOpenMenu(ev);
         };
 
-        $scope.showSources = function() {
+        $scope.showSources = function () {
             $mdDialog.show(
                 $mdDialog.alert()
                     .targetEvent(originatorEv)
@@ -51,7 +51,7 @@ angular.module('dijkstraApp')
             originatorEv = null;
         };
 
-        $scope.showAuthors = function() {
+        $scope.showAuthors = function () {
             $mdDialog.show(
                 $mdDialog.alert()
                     .targetEvent(originatorEv)
@@ -78,6 +78,31 @@ angular.module('dijkstraApp')
         $scope.algorithm = algorithm;
 
         // -------------------------------
+
+        // init graph
+        graph.import(
+            JSON.stringify(
+                {
+                    vertices: [
+                        { "coordinateX": 100, "coordinateY": 350, "id": 1, "name": "A", "isStart": true, "isEnd": false },
+                        { "coordinateX": 300, "coordinateY": 350, "id": 2, "name": "B", "isStart": false, "isEnd": false },
+                        { "coordinateX": 300, "coordinateY": 150, "id": 3, "name": "C", "isStart": false, "isEnd": false },
+                        { "coordinateX": 500, "coordinateY": 150, "id": 4, "name": "D", "isStart": false, "isEnd": false },
+                        { "coordinateX": 500, "coordinateY": 350, "id": 5, "name": "E", "isStart": false, "isEnd": false },
+                        { "coordinateX": 700, "coordinateY": 150, "id": 6, "name": "F", "isStart": false, "isEnd": true }
+                    ],
+                    edges: [
+                        { vertex1: 1, vertex2: 2, weight: 5 },
+                        { vertex1: 2, vertex2: 3, weight: 5 },
+                        { vertex1: 2, vertex2: 5, weight: 5 },
+                        { vertex1: 2, vertex2: 4, weight: 7 },
+                        { vertex1: 3, vertex2: 4, weight: 5 },
+                        { vertex1: 4, vertex2: 5, weight: 5 },
+                        { vertex1: 4, vertex2: 6, weight: 5 }
+                    ]
+                }
+            )
+            );
 
         $scope.resetGraph = function () {
             graph.clear();
@@ -115,13 +140,14 @@ angular.module('dijkstraApp')
 
         $scope.import = function () {
 
-            //TODO
+            //TODO beautiful dialog
+            graph.import(prompt("Paste Graph-JSON", ""))
         };
 
         $scope.export = function () {
 
-            graph.export();
-            // TODO
+            alert(graph.export());
+            // TODO beautiful dialog
         }
     }])
 

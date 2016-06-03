@@ -22,7 +22,14 @@ angular.module('dijkstraApp')
         //notifyListeners();        //no notifier necessary, because 'setEnd()' also notifies listeners after finishing
     };
     this.addEdge = function(edge) {
-        // TODO check for duplicates
+        // check for loop
+        if (this.equals(edge.vertex1, edge.vertex2)) {
+            return; // do nothing, it's a loop
+        }
+        
+        if (this.getEdgeFromVertexToVertex(edge.vertex1, edge.vertex2) != null) {
+            return; // do nothing, an edge between these two vertices already exists.
+        }
 
         edge.id = getNewId();
         edge.name = 'E' + edge.id;
@@ -74,7 +81,7 @@ angular.module('dijkstraApp')
     this.getVertex = function(id) {
         var result = {};
         angular.forEach(vertices, function(vertex) {
-            if(vertex.id = id) {
+            if(vertex.id == id) {
                 result = vertex;
                 return;
             }
@@ -84,7 +91,7 @@ angular.module('dijkstraApp')
     this.getEdge = function(id) {
         var result = {};
         angular.forEach(edges, function(edge) {
-            if(edge.id = id) {
+            if(edge.id == id) {
                 result = edge;
                 return;
             }
@@ -112,8 +119,19 @@ angular.module('dijkstraApp')
         return result;
     };
 
-    this.removeVertex = function(vertex) {
-        vertices.splice(vertices.indexOf(this.getVertex(vertex.id)), 1);
+    this.removeVertex = function (vertex) {
+        var v = this.getVertex(vertex.id);
+
+        // at first, remove neighboring edges
+        var graph = this;
+        var neighbors = this.getVertexNeighbors(v);
+        neighbors.forEach(function(n) {
+            graph.removeEdge(n.edge);
+        });
+
+        // remove vertex
+        vertices.splice(vertices.indexOf(v, 1), 1);
+
         notifyListeners();
     };
     this.removeEdge = function(edge) {
@@ -150,12 +168,59 @@ angular.module('dijkstraApp')
     };
 
     this.export = function () {
-        alert(
-            JSON.stringify({
-                vertices: vertices,
-                edges: edges
-            })
-            );
+        // remove style information and unneccessary properties before exporting
+        var data = {
+            vertices: [],
+            edges: []
+        };
+
+        vertices.forEach(function (v) {
+            data.vertices.push({
+                id: v.id,
+                coordinateX: v.coordinateX,
+                coordinateY: v.coordinateY,
+                name: v.name,
+                isStart: v.isStart,
+                isEnd: v.isEnd
+            });
+        });
+
+        edges.forEach(function (e) {
+            data.edges.push({
+                vertex1: e.vertex1.id,
+                vertex2: e.vertex2.id,
+                weight: e.weight
+            });
+        });
+
+        return JSON.stringify(data); //, null, 2);
+    };
+    this.import = function (json) {
+        var data = JSON.parse(json);
+        var graph = this;
+
+        vertices = [];
+        data.vertices.forEach(function (v) {
+            vertices.push(v);
+            id = Math.max(v.id, id) + 1; // make sure that no duplicate ids are generated after import
+        });
+
+
+        edges = [];
+
+        
+        data.edges.forEach(function (e) {
+            var newEdge = {
+                weight: e.weight,
+                vertex1: graph.getVertex(e.vertex1),
+                vertex2: graph.getVertex(e.vertex2),
+            };
+            graph.addEdge(newEdge);
+        });
+
+        // TODO: data validation?
+
+        notifyListeners();
     };
 
     this.equals = function (o1, o2) {
