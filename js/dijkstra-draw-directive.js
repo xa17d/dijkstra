@@ -252,7 +252,7 @@ angular.module('dijkstraApp')
                         algorithm.v.style = colors.highlighted;
                     }
 
-                    if (step == "calcalt" || step == "comparedist") {
+                    if (step == "calcalt" || step == "comparedist" || step == "assigndist") {
                         // highlight path
 
                         var edge = graph.getEdgeFromVertexToVertex(algorithm.v, algorithm.u);
@@ -267,9 +267,7 @@ angular.module('dijkstraApp')
 
                             v = v.prev;
                         }
-                    }
-
-                    if (step == "calcalt" || step == "comparedist" || step == "assigndist") {
+                    
                         // info on u
                         algorithm.u.info = ["dist[" + algorithm.u.name + "] = " + algorithm.u.dist];
 
