@@ -198,7 +198,7 @@
                                 <div flex="10" layout layout-align="center center">
                                     <span class="md-body-1">slow</span>
                                 </div>
-                                <md-slider class="md-primary" md-discrete ng-model="runInterval" step="0.25" min="0.25" max="3" ng-disabled="runnable !== null" aria-label="speed" flex></md-slider>
+                                <md-slider md-discrete class="md-primary" ng-model="runInterval" min="1" max="100" ng-disabled="runnable !== null" aria-label="Speed" flex></md-slider>
                                 <div flex="10" layout layout-align="center center">
                                     <span class="md-body-1">fast</span>
                                 </div>
@@ -231,7 +231,7 @@
                                     <md-input-container class="input-view">
                                         <label for="lbV">v</label>
                                         <input type="text" id="lbV" ng-model="algorithm.display.v" disabled>
-                                    </md-input-container class="input-view">
+                                    </md-input-container>
                                 </form>
                                 <form>
                                     <md-input-container class="input-view">

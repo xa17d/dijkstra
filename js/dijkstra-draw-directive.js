@@ -13,9 +13,6 @@ angular.module('dijkstraApp')
             var coordinateX;
             var coordinateY;
 
-            // all pixels containing a edge
-            var edgePixels = [];
-
             // some variables
             var nodeRadius = 30;
             var nodeStrokeWidth = 2;
@@ -91,16 +88,16 @@ angular.module('dijkstraApp')
                                 weight: Math.round(verticesDistance(currentVertex, selectedVertex))
                             };
                             graph.addEdge(edge);
-                            addEdgePixels(edge)
                             selectedVertex = null;
                         }
                     }
                     // probably edge was clicked
                     else {
-                        angular.forEach(edgePixels, function (edgePixel) {
-                            if(coordinateX === edgePixel.coordinateX && coordinateY === edgePixel.coordinateY) {
-                                selectedEdge = edgePixel.edge;
-                                scope.$parent.toggleEdge(selectedEdge);
+                        angular.forEach(graph.getEdges(), function (edge) {
+                            var distance = distanceToLine(coordinateX, coordinateY, edge);
+                            if(distance < 125) {
+                                selectedEdge = edge;
+                                scope.$parent.toggleEdge(edge);
                                 return;
                             }
                         });
@@ -120,52 +117,39 @@ angular.module('dijkstraApp')
                 return Math.sqrt(dx*dx + dy*dy);
             }
 
-            // see https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-            function addEdgePixels(edge) {
-                var x1 = edge.vertex1.coordinateX;
-                var x0 = edge.vertex2.coordinateX;
-                var y1 = edge.vertex1.coordinateY;
-                var y0 = edge.vertex2.coordinateY;
+            // see: http://stackoverflow.com/questions/3120357/get-closest-point-to-a-line
+            function distanceToLine(pX, pY, edge) {
+                var apX = pX - edge.vertex1.coordinateX;
+                var apY = pY - edge.vertex1.coordinateY;
 
-                // TODO bugfix
+                var abX = edge.vertex2.coordinateX - edge.vertex1.coordinateX;
+                var abY = edge.vertex2.coordinateY - edge.vertex1.coordinateY;
 
-                if(x0 > x1) {
-                    var x1Old = x1;
-                    x1 = x0;
-                    x0 = x1Old;
+                var magnitudeAB = abX ^ 2 + abY ^ 2;
+                var productABAP = abX * apX + abY * apY;
 
-                    var y1Old = y1;
-                    y1 = y0;
-                    y0 = y1Old;
+                var nDistance = 0;
+                if(magnitudeAB !== 0) {
+                    nDistance = productABAP / magnitudeAB;
                 }
 
-                var deltaX = x1 - x0;
-                var deltaY = y1 - y0;
-
-                var deltaError = (deltaX !== 0) ? Math.abs(deltaY / deltaX) : 50;
-
-                var y = y0;
-                for(var x = x0; x <= x1; x++) {
-
-                    // morph pixel
-                    for(var i = -2; i <= 2; i++) {
-                        for(var j = -2; j <= 2; j++) {
-                            edgePixels.push({
-                                coordinateX: x+i,
-                                coordinateY: y+j,
-                                edge: edge
-                            });
-                        }
-                    }
-
-                    if(deltaError >= 0) {
-                        y++;
-                        deltaError = deltaError - deltaX;
-                    }
-
-                    deltaError = deltaError + deltaY;
+                var nearestPointX;
+                var nearestPointY;
+                if(nDistance < 0) {
+                    nearestPointX = edge.vertex1.coordinateX;
+                    nearestPointY = edge.vertex1.coordinateY;
                 }
-            };
+                else if(nDistance > 1) {
+                    nearestPointX = edge.vertex2.coordinateX;
+                    nearestPointY = edge.vertex2.coordinateY;
+                }
+                else {
+                    nearestPointX = edge.vertex1.coordinateX + abX * nDistance;
+                    nearestPointY = edge.vertex1.coordinateY + abY * nDistance;
+                }
+
+                return verticesDistance({coordinateX: nearestPointX, coordinateY: nearestPointY}, {coordinateX: pX, coordinateY: pY});
+            }
 
             function setStyleForAll(style) {
                 angular.forEach(graph.getEdges(), function (edge) {

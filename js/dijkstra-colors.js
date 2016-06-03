@@ -4,34 +4,44 @@ angular.module('dijkstraApp')
 
 .provider('colors', function () {
 
+    var black = '#000000';
+    var darkgrey = '#616161'        // or #424242
+    var mediumgrey = '#757575';
+    var lightgrey = '#BDBDBD'       // or #9E9E9E
+    var white = '#FFFFFF';
+
+    var primary = '#4CAF50';
+    var accent = '#FF9800';
+
+
     this.faded = {
-        stroke: "#cccccc",
-        background: "#dddddd",
-        edge: "#cccccc"
+        stroke: darkgrey,
+        background: lightgrey,
+        edge: darkgrey
     };
 
     this.selected = {
-        stroke: "#ffff00",
-        background: "#eeee00",
-        edge: "#000000"
+        stroke: black,
+        background: accent,
+        edge: accent
     };
 
     this.visible = {
-        stroke: "#333333",
-        background: "#555555",
-        edge: "#333333"
+        stroke: black,
+        background: lightgrey,
+        edge: black
     };
 
     this.emphasized = {
-        stroke: "#0000ff",
-        background: "#0000ee",
-        edge: "#0000ee"
+        stroke: primary,
+        background: lightgrey,
+        edge: primary
     };
 
     this.highlighted = {
-        stroke: "#00ff00",
-        background: "#00ee00",
-        edge: "#00ff00"
+        stroke: primary,
+        background: accent,
+        edge: accent
     };
 
     this.$get = function () {
