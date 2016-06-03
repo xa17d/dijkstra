@@ -112,8 +112,19 @@ angular.module('dijkstraApp')
         return result;
     };
 
-    this.removeVertex = function(vertex) {
-        vertices.splice(vertices.indexOf(this.getVertex(vertex.id)), 1);
+    this.removeVertex = function (vertex) {
+        var v = this.getVertex(vertex.id);
+
+        // at first, remove neighboring edges
+        var graph = this;
+        var neighbors = this.getVertexNeighbors(v);
+        neighbors.forEach(function(n) {
+            graph.removeEdge(n.edge);
+        });
+
+        // remove vertex
+        vertices.splice(vertices.indexOf(v, 1), 1);
+
         notifyListeners();
     };
     this.removeEdge = function(edge) {
@@ -157,11 +168,18 @@ angular.module('dijkstraApp')
     };
     this.import = function (json) {
         var data = JSON.parse(json);
+        var graph = this;
 
-        vertices = data.vertices;
+        vertices = [];
+        data.vertices.forEach(function (v) {
+            vertices.push(v);
+            id = Math.max(v.id, id) + 1; // make sure that no duplicate ids are generated after import
+        });
+
+
         edges = [];
 
-        var graph = this;
+        
         data.edges.forEach(function (e) {
             var newEdge = {
                 weight: e.weight,
