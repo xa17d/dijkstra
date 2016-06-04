@@ -6,15 +6,32 @@
     width: 100%;
 }
 
+a {
+    color: rgb(76,175,80) !important;
+}
+a:hover {
+    color: rgba(76,175,80,0.7) !important;
+}
+
 /* 
     enable multiple lines in tooltip
     Source: http://stackoverflow.com/questions/13338780/how-to-make-twitter-bootstrap-tooltips-have-multiple-lines
 */
 .tooltip-inner {
-    white-space:pre;
-    max-width:none;
+    white-space: pre;
+    max-width: none;
 }
 
+.dijkstra-canvas {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+.primary-text {
+    color: rgb(76,175,80);
+}
 
 .input-view {
     margin-bottom: 2px !important;

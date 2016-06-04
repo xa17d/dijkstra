@@ -5,7 +5,9 @@ angular.module('dijkstraApp')
     .controller('MainController', ['$scope', '$mdDialog', '$mdSidenav', '$interval', 'graph', 'algorithm', function ($scope, $mdDialog, $mdSidenav, $interval, graph, algorithm) {
 
         $scope.drawVertex = true;
-        $scope.runInterval = 1;     // in seconds
+        $scope.runInterval = 10;     // this is 1 second
+
+        $scope.algorithm = algorithm;
 
         $scope.toggleMenu = function () {
             $mdSidenav('menu').toggle();
@@ -64,8 +66,6 @@ angular.module('dijkstraApp')
             originatorEv = null;
         };
 
-        $scope.graph = graph;
-
         $scope.$watch('activeVertex.name', function () {
             graph.refresh();
         });
@@ -74,8 +74,9 @@ angular.module('dijkstraApp')
             graph.refresh();
         });
 
-
-        $scope.algorithm = algorithm;
+        graph.addListener(function() {
+            $scope.vertices = graph.getVertices();
+        });
 
         // -------------------------------
 
@@ -120,6 +121,9 @@ angular.module('dijkstraApp')
         $scope.run = function () {
             $scope.runnable = $interval(function () {
                 $scope.next();
+                if(algorithm.hasFinished) {
+                    $scope.stopRun();
+                }
             }, 1000 * 10 / $scope.runInterval);        // interval from 1/10s to 10s per step
         };
 

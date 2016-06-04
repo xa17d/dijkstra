@@ -159,9 +159,6 @@
             <md-content layout="row" layout-padding flex>
                 <div flex>
                     <md-card>
-                        <!--
-                        <img ng-src="todo.png" class="md-card-image" alt="Algorithm">
-                        -->
                         <md-card-title>
                             <md-card-title-text>
                                 <span class="md-headline">Algorithm</span>
@@ -195,12 +192,12 @@
                         </md-card-content>
                         <md-card-actions layout="row" layout-align="end center">
                             <div layout style="width: 450px;">
-                                <div flex="10" layout layout-align="center center">
-                                    <span class="md-body-1">slow</span>
+                                <div flex="15" flex-gt-lg="10" layout layout-align="center center">
+                                    <span class="md-body-1" >slow</span>
                                 </div>
-                                <md-slider md-discrete class="md-primary" ng-model="runInterval" min="1" max="100" ng-disabled="runnable !== null" aria-label="Speed" flex></md-slider>
-                                <div flex="10" layout layout-align="center center">
-                                    <span class="md-body-1">fast</span>
+                                <md-slider md-discrete class="md-primary" ng-model="runInterval" min="1" max="1000" ng-disabled="runnable !== null" aria-label="Speed" flex></md-slider>
+                                <div flex="15" flex-gt-lg="10" layout layout-align="center center">
+                                    <span class="md-body-1" >fast</span>
                                 </div>
                             </div>
                             <span flex="10"></span>
@@ -211,9 +208,6 @@
                         </md-card-actions>
                     </md-card>
                     <md-card>
-                        <!--
-                        <img ng-src="todo.png" class="md-card-image" alt="Variables">
-                        -->
                         <md-card-title>
                             <md-card-title-text>
                                 <span class="md-headline">Variables</span>
@@ -221,64 +215,106 @@
                         </md-card-title>
                         <md-card-content>
                             <div layout="row" layout-align="space-around center">
-                                <form>
-                                    <md-input-container class="input-view">
-                                        <label for="lbU">u</label>
-                                        <input type="text" id="lbU" ng-model="algorithm.display.u" disabled>
-                                    </md-input-container>
-                                </form>
-                                <form>
-                                    <md-input-container class="input-view">
-                                        <label for="lbV">v</label>
-                                        <input type="text" id="lbV" ng-model="algorithm.display.v" disabled>
-                                    </md-input-container>
-                                </form>
-                                <form>
-                                    <md-input-container class="input-view">
-                                        <label for="lbQ">Q</label>
-                                        <input type="text" id="lbQ" ng-model="algorithm.display.Q" disabled>
-                                    </md-input-container>
-                                </form>
+                                <md-input-container class="input-view" flex="20">
+                                    <label for="lbU">u</label>
+                                    <input type="text" id="lbU" ng-model="algorithm.display.u" disabled>
+                                </md-input-container>
+                                <md-input-container class="input-view" flex="20">
+                                    <label for="lbV">v</label>
+                                    <input type="text" id="lbV" ng-model="algorithm.display.v" disabled>
+                                </md-input-container>
+                                <md-input-container class="input-view" flex="60">
+                                    <label for="lbQ">Q</label>
+                                    <input type="text" id="lbQ" ng-model="algorithm.display.Q" disabled>
+                                </md-input-container>
                             </div>
-                            <div layout="row" layout-align="space-around center">
-                                <form>
-                                    <md-input-container class="input-view">
-                                        <label for="lbDist">Distance</label>
-                                        <input type="text" id="lbDist" ng-model="algorithm.display.dist" disabled>
-                                    </md-input-container>
-                                </form>
-                                <form>
-                                    <md-input-container class="input-view">
-                                        <label for="lbPrev">Previous</label>
-                                        <input type="text" id="lbPrev" ng-model="algorithm.display.prev" disabled>
-                                    </md-input-container>
-                                </form>
+                        </md-card-content>
+                    </md-card>
+                    <md-card>
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">Result</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+                            <div layout="row" flex>
+                                <div layout="row" layout-align="center center" flex>
+                                    <div ng-repeat="v in algorithm.display.result" layout="row" layout-align="space-around center" flex>
+                                        <div flex class="primary-text">
+                                            {{v.name}}
+                                        </div>
+                                        <div ng-hide="v.isEnd" flex>
+                                            <md-icon md-svg-icon="img/icons/arrow.svg"></md-icon>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </md-card-content>
                     </md-card>
                 </div>
                 <div flex>
                     <md-card>
-                        <!--
-                        <img ng-src="todo.png" class="md-card-image" alt="Graph">
-                        -->
                         <md-card-title>
                             <md-card-title-text>
                                 <span class="md-headline">Graph</span>
                             </md-card-title-text>
                         </md-card-title>
                         <md-card-content>
-                            <pre>
-<canvas height="500" width="800" dijkstra-draw></canvas>
-                            </pre>
+                            <canvas class="dijkstra-canvas" dijkstra-draw></canvas>
                         </md-card-content>
                         <md-card-actions layout="row" layout-align="end center">
-                            <md-button ng-click="resetGraph()" ng-disabled="runnable !== null" class="md-accent">Reset</md-button>
-                            <span flex="10"></span>
+                            <md-button ng-click="resetGraph()" ng-disabled="runnable !== null" class="md-accent">Clear</md-button>
+                            <span flex></span>
                             Edges
                             <md-switch ng-model="drawVertex" aria-label="Draw Vertices or Edges"></md-switch>
                             Vertices
                         </md-card-actions>
+                    </md-card>
+                    <md-card>
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">Path</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+                            <!--
+                            <table class="table table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td ng-repeat="v in vertices"><b>{{v.name}}</b></td>
+                                    </tr>
+                                    <tr ng-repeat="vertexX in vertices">
+                                        <td><b>{{vertexX.name}}</b></td>
+                                        <td ng-repeat="vertexY in vertices">
+                                            <div  ng-hide="vertexX.id === vertexY.id">
+                                                {{vertexX.name}}/{{vertexY.name}}
+                                            </div>
+                                            <div  ng-show="vertexX.id === vertexY.id">
+                                                0
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            -->
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>vertex</th>
+                                        <th>predecessor</th>
+                                        <th>distance from start</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="p in algorithm.display.path">
+                                        <td><b>{{p.name}}</b></td>
+                                        <td>{{p.prev}}</td>
+                                        <td>{{p.dist}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </md-card-content>
                     </md-card>
                 </div>
             </md-content>

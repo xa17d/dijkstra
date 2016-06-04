@@ -8,6 +8,8 @@ angular.module('dijkstraApp')
         // make this algorithm referencable in inner methods
         var algorithm = this;
 
+        algorithm.hasFinished = false;
+
         this.reset = function () {
             this.source = graph.getStartVertex();
 
@@ -20,15 +22,15 @@ angular.module('dijkstraApp')
 
             // variables for algorithm but prepared to display to the user
             this.display = {
-                Q: '?',
-                u: '?',
-                v: '?',
-                lengthUV: '?',
-                alt: '?',
-                dist: '?',
-                prev: '?',
-                distQ: '?',
-                uNeighbors: '?'
+                Q: '--',
+                u: '--',
+                v: '--',
+                lengthUV: '--',
+                alt: '--',
+                dist: '--',
+                prev: '--',
+                distQ: '--',
+                uNeighbors: '--'
             };
 
             this.currentStep = this.steps.start;
@@ -52,6 +54,10 @@ angular.module('dijkstraApp')
 
         // update display variables
         var updateDisplay = function () {
+
+            /*
+             * algorithmic part
+             */
 
             var getName = function (obj) { return obj == null ? "?" : obj.name; }
 
@@ -105,6 +111,32 @@ angular.module('dijkstraApp')
                 if (i != 0) { algorithm.display.prev += "\n"; }
                 algorithm.display.prev += "prev[" + v.name + "] = " + getName(v.prev);
             });
+
+
+            /*
+             * visualization part
+             */
+
+            algorithm.display.path = [];
+            graph.getVertices().forEach(function (v) {
+                algorithm.display.path.push({
+                    name: v.name,
+                    dist: v.dist,
+                    prev: getName(v.prev)
+                });
+            });
+
+            algorithm.display.result = null; // TODO
+            var v = graph.getEndVertex();
+            var list = [];
+            while(typeof v !== 'undefined' && v !== null) {
+                list.push(v);
+                if(v.isStart) {
+                    algorithm.display.result = list.reverse();
+                    algorithm.hasFinished = true;
+                }
+                v = v.prev;
+            }
         };
 
         // Here are the steps defined for the algorithm:

@@ -9,14 +9,16 @@ angular.module('dijkstraApp')
         link: function (scope, element) {
             var context = element[0].getContext('2d');
 
+            context.canvas.width  = window.innerWidth * 0.42;
+            context.canvas.height = window.innerHeight * 0.45;
+
             // coordinates
             var coordinateX;
             var coordinateY;
 
             // some variables
-            var nodeRadius = 30;
+            var nodeRadius = 20;
             var nodeStrokeWidth = 2;
-            var edgeStrength = 1;
 
             var selectedVertex = null;
             var selectedEdge = null;
@@ -45,8 +47,8 @@ angular.module('dijkstraApp')
 
                     angular.forEach(graph.getVertices(), function (vertex) {
                         if (
-                            coordinateX >= vertex.coordinateX - 2 * nodeRadius && coordinateX <= vertex.coordinateX + 2 * nodeRadius &&
-                            coordinateY >= vertex.coordinateY - 2 * nodeRadius && coordinateY <= vertex.coordinateY + 2 * nodeRadius
+                            coordinateX >= vertex.coordinateX - 2.1 * nodeRadius && coordinateX <= vertex.coordinateX + 2.1 * nodeRadius &&
+                            coordinateY >= vertex.coordinateY - 2.1 * nodeRadius && coordinateY <= vertex.coordinateY + 2.1 * nodeRadius
                         ) {
                             scope.$parent.toggleVertex(vertex);
                             selectedVertex = vertex;
@@ -68,8 +70,8 @@ angular.module('dijkstraApp')
 
                     angular.forEach(graph.getVertices(), function (vertex) {
                         if (
-                            coordinateX >= vertex.coordinateX - 2 * nodeRadius && coordinateX <= vertex.coordinateX + 2 * nodeRadius &&
-                            coordinateY >= vertex.coordinateY - 2 * nodeRadius && coordinateY <= vertex.coordinateY + 2 * nodeRadius
+                            coordinateX >= vertex.coordinateX - nodeRadius && coordinateX <= vertex.coordinateX + nodeRadius &&
+                            coordinateY >= vertex.coordinateY - nodeRadius && coordinateY <= vertex.coordinateY + nodeRadius
                         ) {
                             currentVertex = vertex;
                             return;
@@ -91,16 +93,20 @@ angular.module('dijkstraApp')
                             selectedVertex = null;
                         }
                     }
-                        // probably edge was clicked
+                    // if no vertex is clicked, select nearest edge
                     else {
+                        selectedVertex = null;
+
+                        var minDistance = Number.POSITIVE_INFINITY;
                         angular.forEach(graph.getEdges(), function (edge) {
-                            var distance = distanceToLine(coordinateX, coordinateY, edge);
-                            if(distance < 125) {
+                            var dtl = distanceToLine(coordinateX, coordinateY, edge);
+                            if(dtl.distance < minDistance) {
+                                minDistance = dtl.distance;
                                 selectedEdge = edge;
-                                scope.$parent.toggleEdge(edge);
-                                return;
                             }
                         });
+
+                        scope.$parent.toggleEdge(selectedEdge);
                     }
                 }
 
@@ -125,7 +131,7 @@ angular.module('dijkstraApp')
                 var abX = edge.vertex2.coordinateX - edge.vertex1.coordinateX;
                 var abY = edge.vertex2.coordinateY - edge.vertex1.coordinateY;
 
-                var magnitudeAB = abX ^ 2 + abY ^ 2;
+                var magnitudeAB = abX * abX + abY * abY;
                 var productABAP = abX * apX + abY * apY;
 
                 var nDistance = 0;
@@ -148,7 +154,10 @@ angular.module('dijkstraApp')
                     nearestPointY = edge.vertex1.coordinateY + abY * nDistance;
                 }
 
-                return verticesDistance({coordinateX: nearestPointX, coordinateY: nearestPointY}, {coordinateX: pX, coordinateY: pY});
+                return {
+                    distance: verticesDistance({coordinateX: nearestPointX, coordinateY: nearestPointY}, {coordinateX: pX, coordinateY: pY}),
+                    point: {coordinateX: nearestPointX, coordinateY: nearestPointY}
+                };
             }
 
             function setStyleForAll(style) {
@@ -301,16 +310,6 @@ angular.module('dijkstraApp')
 
                 //clear canvas
                 context.clearRect(0, 0, 800, 500);
-
-                /*
-                // SHOW EDGE PIXELS
-                angular.forEach(edgePixels, function (ep) {
-                    context.beginPath();
-                    context.arc(ep.coordinateX, ep.coordinateY, 1, 0, 2 * Math.PI, false);
-                    context.fillStyle = '#ff0000';
-                    context.fill();
-                });
-                */
 
                 if (algorithm.isRunning()) {
                     applyAlgorithmStyle();
