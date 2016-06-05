@@ -133,7 +133,6 @@ angular.module('dijkstraApp')
                 list.push(v);
                 if(v.isStart) {
                     algorithm.display.result = list.reverse();
-                    algorithm.hasFinished = true;
                 }
                 v = v.prev;
             }

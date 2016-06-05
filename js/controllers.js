@@ -121,9 +121,6 @@ angular.module('dijkstraApp')
         $scope.run = function () {
             $scope.runnable = $interval(function () {
                 $scope.next();
-                if(algorithm.hasFinished) {
-                    $scope.stopRun();
-                }
             }, 1000 * 10 / $scope.runInterval);        // interval from 1/10s to 10s per step
         };
 
