@@ -84,18 +84,23 @@
                     </div>
                 </md-toolbar>
                 <md-content ng-controller="MenuSidenavCtrl" layout-padding>
-                    <md-subheader class="md-no-sticky">Graph</md-subheader>
-                    <md-list-item ng-click="import()">
-                        <md-icon md-svg-icon="img/icons/import.svg"></md-icon>
-                        <p> Import </p>
-                    </md-list-item>
-                    <md-list-item ng-click="export()">
-                        <md-icon md-svg-icon="img/icons/export.svg"></md-icon>
-                        <p> Export </p>
+                    <md-subheader class="md-no-sticky">Information</md-subheader>
+                    <md-list-item ng-click="close(); showInfo()">
+                        <md-icon md-svg-icon="img/icons/info.svg"></md-icon>
+                        <p> How does Dijkstra works? </p>
                     </md-list-item>
 
                     <md-divider></md-divider>
 
+                    <md-subheader class="md-no-sticky">Graph</md-subheader>
+                    <md-list-item ng-click="import($event)">
+                        <md-icon md-svg-icon="img/icons/import.svg"></md-icon>
+                        <p> Import </p>
+                    </md-list-item>
+                    <md-list-item ng-click="export($event)">
+                        <md-icon md-svg-icon="img/icons/export.svg"></md-icon>
+                        <p> Export </p>
+                    </md-list-item>
                 </md-content>
             </md-sidenav>
 
@@ -112,12 +117,10 @@
                     </div>
                 </md-toolbar>
                 <md-content ng-controller="VertexSidenavCtrl" layout-padding>
-                    <form>
-                        <md-input-container>
-                            <label for="lbVertexName">Vertex Name</label>
-                            <input type="text" id="lbVertexName" ng-model="activeVertex.name" md-autofocus>
-                        </md-input-container>
-                    </form>
+                    <md-input-container>
+                        <label for="lbVertexName">Vertex Name</label>
+                        <input type="text" id="lbVertexName" ng-model="activeVertex.name" md-autofocus autocomplete="off">
+                    </md-input-container>
                     <div layout="row" layout-align="space-around center">
                         <md-button ng-disabled="activeVertex.isStart || activeVertex.isEnd" ng-click="graph.setStart(activeVertex)" class="md-primary" ng-class="{'md-raised': activeVertex.isStart}">
                             Start
@@ -147,12 +150,15 @@
                     </div>
                 </md-toolbar>
                 <md-content ng-controller="EdgeSidenavCtrl" layout-padding>
-                    <form>
-                        <md-input-container>
-                            <label for="lbEdgeWeight">Edge Weight</label>
-                            <input type="text" id="lbEdgeWeight" ng-model="activeEdge.weight" md-autofocus>
-                        </md-input-container>
-                    </form>
+                    <md-input-container>
+                        <label for="lbEdgeWeight">Edge Weight</label>
+                        <input type="number" id="lbEdgeWeight" ng-model="activeEdge.weight" md-autofocus autocomplete="off">
+                    </md-input-container>
+                    <div layout="row" layout-align="space-around center">
+                        <md-button ng-click="graph.removeEdge(activeEdge); toggleEdge()" class="md-primary">
+                            Remove
+                        </md-button>
+                    </div>
                 </md-content>
             </md-sidenav>
 

@@ -5,9 +5,10 @@ angular.module('dijkstraApp')
     .controller('MainController', ['$scope', '$mdDialog', '$mdSidenav', '$interval', 'graph', 'algorithm', function ($scope, $mdDialog, $mdSidenav, $interval, graph, algorithm) {
 
         $scope.drawVertex = true;
-        $scope.runInterval = 10;     // this is 1 second
+        $scope.runInterval = 100;     // this is 1 second
 
         $scope.algorithm = algorithm;
+        $scope.graph = graph;
 
         $scope.toggleMenu = function () {
             $mdSidenav('menu').toggle();
@@ -81,29 +82,7 @@ angular.module('dijkstraApp')
         // -------------------------------
 
         // init graph
-        graph.import(
-            JSON.stringify(
-                {
-                    vertices: [
-                        { "coordinateX": 100, "coordinateY": 350, "id": 1, "name": "A", "isStart": true, "isEnd": false },
-                        { "coordinateX": 300, "coordinateY": 350, "id": 2, "name": "B", "isStart": false, "isEnd": false },
-                        { "coordinateX": 300, "coordinateY": 150, "id": 3, "name": "C", "isStart": false, "isEnd": false },
-                        { "coordinateX": 500, "coordinateY": 150, "id": 4, "name": "D", "isStart": false, "isEnd": false },
-                        { "coordinateX": 500, "coordinateY": 350, "id": 5, "name": "E", "isStart": false, "isEnd": false },
-                        { "coordinateX": 700, "coordinateY": 150, "id": 6, "name": "F", "isStart": false, "isEnd": true }
-                    ],
-                    edges: [
-                        { vertex1: 1, vertex2: 2, weight: 5 },
-                        { vertex1: 2, vertex2: 3, weight: 5 },
-                        { vertex1: 2, vertex2: 5, weight: 5 },
-                        { vertex1: 2, vertex2: 4, weight: 7 },
-                        { vertex1: 3, vertex2: 4, weight: 5 },
-                        { vertex1: 4, vertex2: 5, weight: 5 },
-                        { vertex1: 4, vertex2: 6, weight: 5 }
-                    ]
-                }
-            )
-            );
+        graph.import(defaultGraph);
 
         $scope.resetGraph = function () {
             graph.clear();
@@ -121,7 +100,7 @@ angular.module('dijkstraApp')
         $scope.run = function () {
             $scope.runnable = $interval(function () {
                 $scope.next();
-            }, 1000 * 10 / $scope.runInterval);        // interval from 1/10s to 10s per step
+            }, 1000 * 100 / $scope.runInterval);        // interval from 10s to 1/10s per step
         };
 
         $scope.stopRun = function () {
@@ -129,27 +108,65 @@ angular.module('dijkstraApp')
             $scope.runnable = null;
         };
 
-        // visualization stuff
-
         $scope.hlLine = function (line) {
             return { 'line-highlight': algorithm.currentStep.lines.contains(line) };
         };
 
-    }])
-
-    .controller('MenuSidenavCtrl', ['$scope', 'graph', function ($scope, graph) {
-
-        $scope.import = function () {
-
-            //TODO beautiful dialog
-            graph.import(prompt("Paste Graph-JSON", ""))
+        $scope.showInfo = function () {
+            $mdDialog.show({
+                controller: function ($scope) {
+                    $scope.close = function () {
+                        $mdDialog.hide();
+                    };
+                },
+                templateUrl: 'dialog/info.tmpl.html',
+                parent: angular.element(document.body),
+                clickOutsideToClose:true,
+                fullscreen: true
+            });
         };
 
-        $scope.export = function () {
+        // show information on page loading
+        $scope.showInfo();
+    }])
 
-            alert(graph.export());
-            // TODO beautiful dialog
-        }
+    .controller('MenuSidenavCtrl', ['$scope', '$mdDialog', '$mdSidenav', 'graph', function ($scope, $mdDialog, $mdSidenav, graph) {
+
+        $scope.import = function (ev) {
+            $mdDialog.show({
+                controller: function ($scope) {
+                    $scope.load = function () {
+                        graph.import($scope.data);
+                        $mdDialog.hide();
+                    };
+                },
+                templateUrl: 'dialog/import.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: false
+            });
+        };
+
+        $scope.export = function (ev) {
+            $mdDialog.show({
+                controller: function ($scope) {
+                    $scope.data = graph.export();
+                    $scope.close = function () {
+                        $mdDialog.hide();
+                    };
+                },
+                templateUrl: 'dialog/export.tmpl.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: false
+            });
+        };
+
+        $scope.close = function () {
+            $mdSidenav('menu').close();
+        };
     }])
 
     .controller('VertexSidenavCtrl', function ($scope, $mdSidenav) {
@@ -165,3 +182,123 @@ angular.module('dijkstraApp')
             $mdSidenav('edge').close();
         };
     });
+
+var defaultGraph = JSON.stringify(
+    {
+        vertices: [
+            {
+                "id": 15,
+                "coordinateX": 99,
+                "coordinateY": 74,
+                "name": "V15",
+                "isStart": true,
+                "isEnd": false
+            },
+            {
+                "id": 16,
+                "coordinateX": 267,
+                "coordinateY": 44,
+                "name": "V16",
+                "isStart": false,
+                "isEnd": false
+            },
+            {
+                "id": 17,
+                "coordinateX": 95,
+                "coordinateY": 212,
+                "name": "V17",
+                "isStart": false,
+                "isEnd": false
+            },
+            {
+                "id": 18,
+                "coordinateX": 274,
+                "coordinateY": 278,
+                "name": "V18",
+                "isStart": false,
+                "isEnd": false
+            },
+            {
+                "id": 19,
+                "coordinateX": 439,
+                "coordinateY": 209,
+                "name": "V19",
+                "isStart": false,
+                "isEnd": false
+            },
+            {
+                "id": 20,
+                "coordinateX": 436,
+                "coordinateY": 67,
+                "name": "V20",
+                "isStart": false,
+                "isEnd": false
+            },
+            {
+                "id": 21,
+                "coordinateX": 535,
+                "coordinateY": 167,
+                "name": "V21",
+                "isStart": false,
+                "isEnd": true
+            }
+        ],
+        edges: [
+            {
+                "vertex1": 17,
+                "vertex2": 15,
+                "weight": 138
+            },
+            {
+                "vertex1": 18,
+                "vertex2": 17,
+                "weight": 191
+            },
+            {
+                "vertex1": 19,
+                "vertex2": 18,
+                "weight": 179
+            },
+            {
+                "vertex1": 21,
+                "vertex2": 19,
+                "weight": 105
+            },
+            {
+                "vertex1": 20,
+                "vertex2": 21,
+                "weight": 141
+            },
+            {
+                "vertex1": 19,
+                "vertex2": 20,
+                "weight": 142
+            },
+            {
+                "vertex1": 16,
+                "vertex2": 20,
+                "weight": 171
+            },
+            {
+                "vertex1": 15,
+                "vertex2": 16,
+                "weight": 171
+            },
+            {
+                "vertex1": 18,
+                "vertex2": 15,
+                "weight": 269
+            },
+            {
+                "vertex1": 18,
+                "vertex2": 16,
+                "weight": 234
+            },
+            {
+                "vertex1": 20,
+                "vertex2": 18,
+                "weight": 266
+            }
+        ]
+    }
+);

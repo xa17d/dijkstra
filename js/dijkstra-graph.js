@@ -193,7 +193,7 @@ angular.module('dijkstraApp')
             });
         });
 
-        return JSON.stringify(data); //, null, 2);
+        return JSON.stringify(data, null, 4);
     };
     this.import = function (json) {
         var data = JSON.parse(json);

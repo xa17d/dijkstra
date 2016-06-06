@@ -9,6 +9,8 @@ angular.module('dijkstraApp')
         var algorithm = this;
 
         algorithm.hasFinished = false;
+        
+        var PLACEHOLDER = '--';
 
         this.reset = function () {
             this.source = graph.getStartVertex();
@@ -22,15 +24,15 @@ angular.module('dijkstraApp')
 
             // variables for algorithm but prepared to display to the user
             this.display = {
-                Q: '--',
-                u: '--',
-                v: '--',
-                lengthUV: '--',
-                alt: '--',
-                dist: '--',
-                prev: '--',
-                distQ: '--',
-                uNeighbors: '--'
+                Q: PLACEHOLDER,
+                u: PLACEHOLDER,
+                v: PLACEHOLDER,
+                lengthUV: PLACEHOLDER,
+                alt: PLACEHOLDER,
+                dist: PLACEHOLDER,
+                prev: PLACEHOLDER,
+                distQ: PLACEHOLDER,
+                uNeighbors: PLACEHOLDER
             };
 
             this.currentStep = this.steps.start;
@@ -59,7 +61,7 @@ angular.module('dijkstraApp')
              * algorithmic part
              */
 
-            var getName = function (obj) { return obj == null ? "?" : obj.name; }
+            var getName = function (obj) { return obj == null ? PLACEHOLDER : obj.name; }
 
             // Q
             algorithm.display.Q = "[";
@@ -74,7 +76,7 @@ angular.module('dijkstraApp')
 
             // uNeighbors
             if (algorithm.u == null) {
-                algorithm.display.uNeighbors = '?';
+                algorithm.display.uNeighbors = PLACEHOLDER;
             } else {
                 algorithm.display.uNeighbors = 'Neighbors of ' + algorithm.u.name;
                 graph.getVertexNeighbors(algorithm.u).forEach(function (edge, i) {
@@ -86,10 +88,10 @@ angular.module('dijkstraApp')
             algorithm.display.v = getName(algorithm.v);
 
             // lengthUV
-            algorithm.display.lengthUV = (algorithm.lengthUV == null ? "?" : algorithm.lengthUV);
+            algorithm.display.lengthUV = (algorithm.lengthUV == null ? PLACEHOLDER : algorithm.lengthUV);
 
             // alt
-            algorithm.display.alt = (algorithm.alt == null ? "?" : algorithm.alt);
+            algorithm.display.alt = (algorithm.alt == null ? PLACEHOLDER : algorithm.alt);
 
             // dist
             algorithm.display.dist = "";
@@ -126,7 +128,7 @@ angular.module('dijkstraApp')
                 });
             });
 
-            algorithm.display.result = null; // TODO
+            algorithm.display.result = null;
             var v = graph.getEndVertex();
             var list = [];
             while(typeof v !== 'undefined' && v !== null) {
