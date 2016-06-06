@@ -150,6 +150,29 @@ angular.module('dijkstraApp')
             alert(graph.export());
             // TODO beautiful dialog
         }
+
+        $scope.random = function () {
+            graph.clear();
+
+            for (var i = 0; i < 6; i++) {
+                for (var j = 0; j < 11; j++) {
+                    graph.addVertex({
+                        coordinateX: 30 + j * 70,
+                        coordinateY: 30 + i * 70
+                    });
+                }
+            }
+
+            for (var i = 0; i < 100; i++) {
+                var v1 = graph.getVertices()[Math.floor(Math.random() * graph.getVertices().length)];
+                var v2 = graph.getVertices()[Math.floor(Math.random() * graph.getVertices().length)];
+                graph.addEdge({
+                    vertex1: v1,
+                    vertex2: v2,
+                    weight: Math.floor(Math.random() * 20)
+                });
+            }
+        };
     }])
 
     .controller('VertexSidenavCtrl', function ($scope, $mdSidenav) {
