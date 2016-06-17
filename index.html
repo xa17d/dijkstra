@@ -215,7 +215,7 @@
                             </div>
                             <span flex="10"></span>
                             <md-button ng-click="resetAlgorithm()" ng-disabled="runnable !== null" class="md-accent">Reset</md-button>
-                            <md-button ng-click="next()" ng-disabled="runnable !== null" class="md-primary">Next</md-button>
+                            <md-button ng-click="next()" ng-disabled="!canNext()" class="md-primary">Next</md-button>
                             <md-button ng-show="runnable === null" ng-click="run()" class="md-raised md-primary">Run</md-button>
                             <md-button ng-hide="runnable === null" ng-click="stopRun()" class="md-raised md-primary">Stop</md-button>
                         </md-card-actions>
