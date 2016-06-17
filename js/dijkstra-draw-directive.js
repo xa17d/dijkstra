@@ -9,7 +9,7 @@ angular.module('dijkstraApp')
         link: function (scope, element) {
             var context = element[0].getContext('2d');
 
-            context.canvas.width  = window.innerWidth * 0.42;
+            context.canvas.width = window.innerWidth * 0.42;
             context.canvas.height = window.innerHeight * 0.45;
 
             // coordinates
@@ -93,14 +93,14 @@ angular.module('dijkstraApp')
                             selectedVertex = null;
                         }
                     }
-                    // if no vertex is clicked, select nearest edge
+                        // if no vertex is clicked, select nearest edge
                     else {
                         selectedVertex = null;
 
                         var minDistance = Number.POSITIVE_INFINITY;
                         angular.forEach(graph.getEdges(), function (edge) {
                             var dtl = distanceToLine(coordinateX, coordinateY, edge);
-                            if(dtl.distance < minDistance) {
+                            if (dtl.distance < minDistance) {
                                 minDistance = dtl.distance;
                                 selectedEdge = edge;
                             }
@@ -135,17 +135,17 @@ angular.module('dijkstraApp')
                 var productABAP = abX * apX + abY * apY;
 
                 var nDistance = 0;
-                if(magnitudeAB !== 0) {
+                if (magnitudeAB !== 0) {
                     nDistance = productABAP / magnitudeAB;
                 }
 
                 var nearestPointX;
                 var nearestPointY;
-                if(nDistance < 0) {
+                if (nDistance < 0) {
                     nearestPointX = edge.vertex1.coordinateX;
                     nearestPointY = edge.vertex1.coordinateY;
                 }
-                else if(nDistance > 1) {
+                else if (nDistance > 1) {
                     nearestPointX = edge.vertex2.coordinateX;
                     nearestPointY = edge.vertex2.coordinateY;
                 }
@@ -155,8 +155,8 @@ angular.module('dijkstraApp')
                 }
 
                 return {
-                    distance: verticesDistance({coordinateX: nearestPointX, coordinateY: nearestPointY}, {coordinateX: pX, coordinateY: pY}),
-                    point: {coordinateX: nearestPointX, coordinateY: nearestPointY}
+                    distance: verticesDistance({ coordinateX: nearestPointX, coordinateY: nearestPointY }, { coordinateX: pX, coordinateY: pY }),
+                    point: { coordinateX: nearestPointX, coordinateY: nearestPointY }
                 };
             }
 
@@ -260,7 +260,7 @@ angular.module('dijkstraApp')
 
                             v = v.prev;
                         }
-                    
+
                         // info on u
                         algorithm.u.info = ["dist[" + algorithm.u.name + "] = " + algorithm.u.dist];
 
@@ -304,6 +304,60 @@ angular.module('dijkstraApp')
 
                     setStyleForAll(colors.faded);
                 }
+            }
+
+            /**
+             * Source: http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
+             * Draws a rounded rectangle using the current state of the canvas.
+             * If you omit the last three params, it will draw a rectangle
+             * outline with a 5 pixel border radius
+             * @param {CanvasRenderingContext2D} ctx
+             * @param {Number} x The top left x coordinate
+             * @param {Number} y The top left y coordinate
+             * @param {Number} width The width of the rectangle
+             * @param {Number} height The height of the rectangle
+             * @param {Number} [radius = 5] The corner radius; It can also be an object 
+             *                 to specify different radii for corners
+             * @param {Number} [radius.tl = 0] Top left
+             * @param {Number} [radius.tr = 0] Top right
+             * @param {Number} [radius.br = 0] Bottom right
+             * @param {Number} [radius.bl = 0] Bottom left
+             * @param {Boolean} [fill = false] Whether to fill the rectangle.
+             * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
+             */
+            function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+                if (typeof stroke == 'undefined') {
+                    stroke = true;
+                }
+                if (typeof radius === 'undefined') {
+                    radius = 5;
+                }
+                if (typeof radius === 'number') {
+                    radius = { tl: radius, tr: radius, br: radius, bl: radius };
+                } else {
+                    var defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
+                    for (var side in defaultRadius) {
+                        radius[side] = radius[side] || defaultRadius[side];
+                    }
+                }
+                ctx.beginPath();
+                ctx.moveTo(x + radius.tl, y);
+                ctx.lineTo(x + width - radius.tr, y);
+                ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+                ctx.lineTo(x + width, y + height - radius.br);
+                ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+                ctx.lineTo(x + radius.bl, y + height);
+                ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+                ctx.lineTo(x, y + radius.tl);
+                ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+                ctx.closePath();
+                if (fill) {
+                    ctx.fill();
+                }
+                if (stroke) {
+                    ctx.stroke();
+                }
+
             }
 
             function redrawCanvas() {
@@ -375,13 +429,40 @@ angular.module('dijkstraApp')
                     }
 
                     if (vertex.info != null) {
+
+
+                        var lineHeight = 14;
+
+
+                        var xCenter = vertex.coordinateX;
+                        var yTop = vertex.coordinateY + nodeRadius + 10;
+                        var padding = 3;
+                        var maxLineLength = 0;
+
+                        // measure text
+                        for (var i = 0; i < vertex.info.length; i++) {
+                            var text = vertex.info[i];
+                            maxLineLength = Math.max(maxLineLength, text.length);
+                        }
+
+                        context.lineWidth = 1;
+                        context.fillStyle = "rgba(245,245,245,0.8)"; //colors.faded.background;
+                        context.strokeStyle = colors.faded.stroke;
+                        var width = 5.88 * maxLineLength;
+                        var height = vertex.info.length * lineHeight + 10;
+
+                        roundRect(context, xCenter - width / 2 - padding, yTop - padding, width + 2 * padding, height + padding, 4, true, true);
+                        context.fillRect(xCenter - width / 2, yTop, width, height);
+
                         context.font = "12px Century Gothic";
                         context.fillStyle = "#4CAF50";
                         context.textAlign = "center";
 
-                        // for multiline text
+                        // draw multiline text
                         for (var i = 0; i < vertex.info.length; i++) {
-                            context.fillText(vertex.info[i], vertex.coordinateX, vertex.coordinateY + nodeRadius + 14 + 14 * i);
+                            var text = vertex.info[i];
+                            maxLineLength = Math.max(maxLineLength, text.length);
+                            context.fillText(text, xCenter, yTop + lineHeight + lineHeight * i);
                         }
                     }
 
