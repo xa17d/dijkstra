@@ -34,6 +34,15 @@ a:hover {
     color: rgb(76,175,80);
 }
 
+md-card {
+    opacity: 0.87 !important;
+}
+
+md-tabs-canvas,
+.semi-transparent {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
 .input-view {
     margin-bottom: 2px !important;
 }
