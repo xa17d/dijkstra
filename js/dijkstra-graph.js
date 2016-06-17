@@ -2,7 +2,7 @@
 
 angular.module('dijkstraApp')
 
-.provider('graph', function() {
+.provider('graph', function () {
 
     var id = 0
     var listeners = [];
@@ -10,23 +10,47 @@ angular.module('dijkstraApp')
     var edges = [];
 
     this.algorithm = null;
-    
-    this.addVertex = function(vertex) {
+
+    var vertexNames = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+    this.findVertexName = function () {
+        var i, v, name;
+
+        for (i = 0; i < vertexNames.length; i++) {
+            var name = vertexNames[i];
+            var v = this.getVertexByName(name);
+            if (v == null) {
+                // name not found, so we can use it
+                return name;
+            }
+        }
+
+        do {
+            name = "V" + i;
+            v = this.getVertexByName(name);
+            i++;
+
+        } while (v != null);
+
+        return name;
+    }
+
+    this.addVertex = function (vertex) {
         vertex.id = getNewId();
-        vertex.name = 'V' + vertex.id;
+        vertex.name = this.findVertexName();
         vertex.isStart = (vertices.length === 0);
         vertices.push(vertex);
-        if(vertices.length > 1) {
+        if (vertices.length > 1) {
             this.setEnd(vertex);
         }
+
         //notifyListeners();        //no notifier necessary, because 'setEnd()' also notifies listeners after finishing
     };
-    this.addEdge = function(edge) {
+    this.addEdge = function (edge) {
         // check for loop
         if (this.equals(edge.vertex1, edge.vertex2)) {
             return; // do nothing, it's a loop
         }
-        
+
         if (this.getEdgeFromVertexToVertex(edge.vertex1, edge.vertex2) != null) {
             return; // do nothing, an edge between these two vertices already exists.
         }
@@ -38,10 +62,10 @@ angular.module('dijkstraApp')
         notifyListeners();
     };
 
-    this.getVertices = function() {
+    this.getVertices = function () {
         return vertices;
     }
-    this.getEdges = function() {
+    this.getEdges = function () {
         return edges;
     }
 
@@ -78,20 +102,20 @@ angular.module('dijkstraApp')
         return result;
     }
 
-    this.getVertex = function(id) {
+    this.getVertex = function (id) {
         var result = {};
-        angular.forEach(vertices, function(vertex) {
-            if(vertex.id == id) {
+        angular.forEach(vertices, function (vertex) {
+            if (vertex.id == id) {
                 result = vertex;
                 return;
             }
         });
         return result;
     };
-    this.getEdge = function(id) {
+    this.getEdge = function (id) {
         var result = {};
-        angular.forEach(edges, function(edge) {
-            if(edge.id == id) {
+        angular.forEach(edges, function (edge) {
+            if (edge.id == id) {
                 result = edge;
                 return;
             }
@@ -118,6 +142,16 @@ angular.module('dijkstraApp')
         });
         return result;
     };
+    this.getVertexByName = function (name) {
+        var result = null;
+        angular.forEach(vertices, function (vertex) {
+            if (vertex.name == name) {
+                result = vertex;
+                return;
+            }
+        });
+        return result;
+    };
 
     this.removeVertex = function (vertex) {
         var v = this.getVertex(vertex.id);
@@ -125,7 +159,7 @@ angular.module('dijkstraApp')
         // at first, remove neighboring edges
         var graph = this;
         var neighbors = this.getVertexNeighbors(v);
-        neighbors.forEach(function(n) {
+        neighbors.forEach(function (n) {
             graph.removeEdge(n.edge);
         });
 
@@ -134,7 +168,7 @@ angular.module('dijkstraApp')
 
         notifyListeners();
     };
-    this.removeEdge = function(edge) {
+    this.removeEdge = function (edge) {
         edges.splice(edges.indexOf(this.getEdge(edge.id)), 1);
         notifyListeners();
     };
@@ -153,15 +187,15 @@ angular.module('dijkstraApp')
         notifyListeners();
     };
 
-    this.addListener = function (listener){
+    this.addListener = function (listener) {
         listeners.push(listener);
     }
 
-    this.refresh = function() {
+    this.refresh = function () {
         notifyListeners();
     }
 
-    this.clear = function() {
+    this.clear = function () {
         vertices = [];
         edges = [];
         notifyListeners();
@@ -208,7 +242,7 @@ angular.module('dijkstraApp')
 
         edges = [];
 
-        
+
         data.edges.forEach(function (e) {
             var newEdge = {
                 weight: e.weight,
@@ -224,7 +258,7 @@ angular.module('dijkstraApp')
     };
 
     this.equals = function (o1, o2) {
-        if(o1 != null && o2 != null && typeof o1.id !== 'undefined' && typeof o2.id !== 'undefined') {
+        if (o1 != null && o2 != null && typeof o1.id !== 'undefined' && typeof o2.id !== 'undefined') {
             return o1.id === o2.id;
         }
 
@@ -243,7 +277,7 @@ angular.module('dijkstraApp')
         });
     }
 
-    this.$get = function() {
+    this.$get = function () {
         return this;
     };
 });
