@@ -98,6 +98,11 @@ angular.module('dijkstraApp')
 
         $scope.runnable = null;
         $scope.run = function () {
+
+            if (algorithm.currentStep == algorithm.steps.finish) {
+                $scope.resetAlgorithm();
+            }
+
             $scope.runnable = $interval(function () {
                 $scope.next();
             }, 1000 * 100 / $scope.runInterval);        // interval from 10s to 1/10s per step
@@ -107,6 +112,16 @@ angular.module('dijkstraApp')
             $interval.cancel($scope.runnable);
             $scope.runnable = null;
         };
+
+        algorithm.addListener(function () {
+            if (algorithm.currentStep == algorithm.steps.finish) {
+                $scope.stopRun();
+            }
+        });
+
+        $scope.canNext = function () {
+            return ($scope.runnable === null) && (algorithm.currentStep != algorithm.steps.finish);
+        }
 
         $scope.hlLine = function (line) {
             return { 'line-highlight': algorithm.currentStep.lines.contains(line) };
