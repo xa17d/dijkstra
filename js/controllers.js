@@ -2,7 +2,7 @@
 
 angular.module('dijkstraApp')
 
-    .controller('MainController', ['$scope', '$mdDialog', '$mdSidenav', '$interval', 'graph', 'algorithm', function ($scope, $mdDialog, $mdSidenav, $interval, graph, algorithm) {
+    .controller('MainController', ['$scope', '$window', '$mdDialog', '$mdSidenav', '$interval', 'graph', 'algorithm', function ($scope, $window, $mdDialog, $mdSidenav, $interval, graph, algorithm) {
 
         $scope.drawVertex = true;
         $scope.runInterval = 100;     // this is 1 second
@@ -146,6 +146,24 @@ angular.module('dijkstraApp')
             });
         };
 
+        $scope.showComments = false;
+        $scope.$watch('window.innerWidth', function() {
+
+        });
+        var w = angular.element($window);
+        $scope.$watch(
+            function () {
+                return $window.innerWidth;
+            },
+            function (value) {
+                $scope.showComments = (value >= 1280);
+            },
+            true
+        );
+        w.bind('resize', function(){
+            $scope.$apply();
+        });
+
         // show information on page loading
         $scope.showInfo();
     }])
@@ -192,7 +210,7 @@ angular.module('dijkstraApp')
 
         $scope.close = function () {
             $mdSidenav('menu').close();
-        }
+        };
 
         $scope.random = function () {
             graph.clear();

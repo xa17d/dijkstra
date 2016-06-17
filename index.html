@@ -182,7 +182,7 @@
                             </md-card-title-text>
                         </md-card-title>
                         <md-card-content>
-                            <pre>
+                            <pre ng-if="showComments">
 <span ng-class="hlLine(01)"> 1  function Dijkstra(Graph, source):</span>
 <span ng-class="hlLine(02)"> 2</span>
 <span ng-class="hlLine(03)"> 3      create vertex set Q</span>
@@ -196,13 +196,37 @@
 <span ng-class="hlLine(11)">11</span>
 <span ng-class="hlLine(12)">12      while <v info="{name: 'Q', text: 'Q'}"></v> is not empty:</span>
 <span ng-class="hlLine(13)">13          <v info="{name: 'u', text: 'u'}"></v> ← vertex in Q with min <v info="{name: 'distQ', text: 'dist[u]'}"></v>    // Source node will be selected first</span>
-<span ng-class="hlLine(14)">14          remove <v info="{name: 'u', text: 'u'}"></v> from <v info="{name: 'Q', text: 'Q'}"></v> </span>
+<span ng-class="hlLine(14)">14          remove <v info="{name: 'u', text: 'u'}"></v> from <v info="{name: 'Q', text: 'Q'}"></v></span>
 <span ng-class="hlLine(15)">15</span>
 <span ng-class="hlLine(16)">16          for each neighbor <v info="{name: 'v', text: 'v'}"></v> of <v info="{name: 'uNeighbors', text: 'u'}"></v>:           // where v is still in Q.</span>
 <span ng-class="hlLine(17)">17              <v info="{name: 'alt', text: 'alt'}"></v> ← <v info="{name: 'dist', text: 'dist[u]'}"></v> + <v info="{name: 'lengthUV', text: 'length(u, v)'}"></v></span>
 <span ng-class="hlLine(18)">18              if <v info="{name: 'alt', text: 'alt'}"></v> < dist[v]:               // A shorter path to v has been found</span>
-<span ng-class="hlLine(19)">19                  <v info="{name: 'dist', text: 'dist[v]'}"></v> ← <v info="{name: 'alt', text: 'alt'}"></v> </span>
-<span ng-class="hlLine(20)">20                  <v info="{name: 'prev', text: 'prev[v]'}"></v> ← <v info="{name: 'u', text: 'u'}"></v> </span>
+<span ng-class="hlLine(19)">19                  <v info="{name: 'dist', text: 'dist[v]'}"></v> ← <v info="{name: 'alt', text: 'alt'}"></v></span>
+<span ng-class="hlLine(20)">20                  <v info="{name: 'prev', text: 'prev[v]'}"></v> ← <v info="{name: 'u', text: 'u'}"></v></span>
+<span ng-class="hlLine(21)">21</span>
+<span ng-class="hlLine(22)">22      return dist[], prev[]</span>
+                            </pre>
+                            <pre ng-if="!showComments">
+<span ng-class="hlLine(01)"> 1  function Dijkstra(Graph, source):</span>
+<span ng-class="hlLine(02)"> 2</span>
+<span ng-class="hlLine(03)"> 3      create vertex set Q</span>
+<span ng-class="hlLine(04)"> 4</span>
+<span ng-class="hlLine(05)"> 5      for each vertex v in Graph:</span>
+<span ng-class="hlLine(06)"> 6          <v info="{name: 'dist', text: 'dist[v]'}"></v> ← INFINITY</span>
+<span ng-class="hlLine(07)"> 7          <v info="{name: 'prev', text: 'prev[v]'}"></v> ← UNDEFINED</span>
+<span ng-class="hlLine(08)"> 8          add v to <v info="{name: 'Q', text: 'Q'}"></v></span>
+<span ng-class="hlLine(09)"> 9</span>
+<span ng-class="hlLine(10)">10      <v info="{name: 'dist', text: 'dist[source]'}"></v> ← 0</span>
+<span ng-class="hlLine(11)">11</span>
+<span ng-class="hlLine(12)">12      while <v info="{name: 'Q', text: 'Q'}"></v> is not empty:</span>
+<span ng-class="hlLine(13)">13          <v info="{name: 'u', text: 'u'}"></v> ← vertex in Q with min <v info="{name: 'distQ', text: 'dist[u]'}"></v></span>
+<span ng-class="hlLine(14)">14          remove <v info="{name: 'u', text: 'u'}"></v> from <v info="{name: 'Q', text: 'Q'}"></v></span>
+<span ng-class="hlLine(15)">15</span>
+<span ng-class="hlLine(16)">16          for each neighbor <v info="{name: 'v', text: 'v'}"></v> of <v info="{name: 'uNeighbors', text: 'u'}"></v>:</span>
+<span ng-class="hlLine(17)">17              <v info="{name: 'alt', text: 'alt'}"></v> ← <v info="{name: 'dist', text: 'dist[u]'}"></v> + <v info="{name: 'lengthUV', text: 'length(u, v)'}"></v></span>
+<span ng-class="hlLine(18)">18              if <v info="{name: 'alt', text: 'alt'}"></v> < dist[v]:</span>
+<span ng-class="hlLine(19)">19                  <v info="{name: 'dist', text: 'dist[v]'}"></v> ← <v info="{name: 'alt', text: 'alt'}"></v></span>
+<span ng-class="hlLine(20)">20                  <v info="{name: 'prev', text: 'prev[v]'}"></v> ← <v info="{name: 'u', text: 'u'}"></v></span>
 <span ng-class="hlLine(21)">21</span>
 <span ng-class="hlLine(22)">22      return dist[], prev[]</span>
                             </pre>
@@ -250,7 +274,7 @@
                     <md-card>
                         <md-card-title>
                             <md-card-title-text>
-                                <span class="md-headline">Result</span>
+                                <span class="md-headline">Path</span>
                             </md-card-title-text>
                         </md-card-title>
                         <md-card-content>
@@ -266,7 +290,7 @@
                                     </div>
                                 </div>
                                 <div ng-hide="algorithm.display.result.length > 0" layout="row" layout-align="start center" flex>
-                                    There is no path between start- and end-node found yet!
+                                    There has no path been found yet!
                                 </div>
                             </div>
                         </md-card-content>
@@ -293,32 +317,11 @@
                     <md-card>
                         <md-card-title>
                             <md-card-title-text>
-                                <span class="md-headline">Path</span>
+                                <span class="md-headline">Vertices</span>
                             </md-card-title-text>
                         </md-card-title>
                         <md-card-content>
-                            <!--
-                            <table class="table table-condensed">
-                                <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td ng-repeat="v in vertices"><b>{{v.name}}</b></td>
-                                    </tr>
-                                    <tr ng-repeat="vertexX in vertices">
-                                        <td><b>{{vertexX.name}}</b></td>
-                                        <td ng-repeat="vertexY in vertices">
-                                            <div  ng-hide="vertexX.id === vertexY.id">
-                                                {{vertexX.name}}/{{vertexY.name}}
-                                            </div>
-                                            <div  ng-show="vertexX.id === vertexY.id">
-                                                0
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            -->
-                            <table class="table table-condensed">
+                            <table ng-show="algorithm.display.path.length > 0" class="table table-condensed">
                                 <thead>
                                     <tr>
                                         <th>vertex</th>
@@ -334,6 +337,9 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div ng-hide="algorithm.display.path.length > 0">
+                                Vertices will be shown as soon as algorithm is running
+                            </div>
                         </md-card-content>
                     </md-card>
                 </div>
