@@ -139,6 +139,9 @@ angular.module('dijkstraApp')
                         graph.import($scope.data);
                         $mdDialog.hide();
                     };
+                    $scope.close = function () {
+                        $mdDialog.cancel();
+                    };
                 },
                 templateUrl: 'dialog/import.tmpl.html',
                 parent: angular.element(document.body),
@@ -154,6 +157,9 @@ angular.module('dijkstraApp')
                     $scope.data = graph.export();
                     $scope.close = function () {
                         $mdDialog.hide();
+                    };
+                    $scope.close = function () {
+                        $mdDialog.cancel();
                     };
                 },
                 templateUrl: 'dialog/export.tmpl.html',

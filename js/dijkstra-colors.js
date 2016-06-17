@@ -5,9 +5,10 @@ angular.module('dijkstraApp')
 .provider('colors', function () {
 
     var black = '#000000';
-    var darkgrey = '#616161'        // or #424242
+    var darkgrey = '#616161';
     var mediumgrey = '#757575';
-    var lightgrey = '#BDBDBD'       // or #9E9E9E
+    var lightgrey = '#BDBDBD';
+    var background = '#F5F5F5';
     var white = '#FFFFFF';
 
     var primary = '#4CAF50';
@@ -15,9 +16,9 @@ angular.module('dijkstraApp')
 
 
     this.faded = {
-        stroke: darkgrey,
-        background: lightgrey,
-        edge: darkgrey
+        stroke: lightgrey,
+        background: background,
+        edge: lightgrey
     };
 
     this.selected = {

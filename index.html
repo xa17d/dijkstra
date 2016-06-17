@@ -54,13 +54,13 @@
                     <md-menu-content width="4">
                         <md-menu-item>
                             <md-button ng-click="showSources($event)">
-                                <md-icon md-menu-origin md-svg-icon="img/icons/more_vert.svg"></md-icon>
+                                <md-icon md-menu-origin md-svg-icon="img/icons/source.svg"></md-icon>
                                 Sources
                             </md-button>
                         </md-menu-item>
                         <md-menu-item>
                             <md-button ng-click="showAuthors($event)">
-                                <md-icon md-menu-origin md-svg-icon="img/icons/more_vert.svg"></md-icon>
+                                <md-icon md-menu-origin md-svg-icon="img/icons/authors.svg"></md-icon>
                                 Authors
                             </md-button>
                         </md-menu-item>
@@ -105,7 +105,7 @@
                     <md-divider></md-divider>
 
                     <md-list-item ng-click="random()">
-                        <md-icon md-svg-icon="img/icons/import.svg"></md-icon>
+                        <md-icon md-svg-icon="img/icons/random.svg"></md-icon>
                         <p> Random </p>
                     </md-list-item>
                 </md-content>
@@ -251,7 +251,7 @@
                         </md-card-title>
                         <md-card-content>
                             <div layout="row" flex>
-                                <div layout="row" layout-align="center center" flex>
+                                <div ng-show="algorithm.display.result.length > 0" layout="row" layout-align="center center" flex>
                                     <div ng-repeat="v in algorithm.display.result" layout="row" layout-align="space-around center" flex>
                                         <div flex class="primary-text">
                                             {{v.name}}
@@ -260,6 +260,9 @@
                                             <md-icon md-svg-icon="img/icons/arrow.svg"></md-icon>
                                         </div>
                                     </div>
+                                </div>
+                                <div ng-hide="algorithm.display.result.length > 0" layout="row" layout-align="start center" flex>
+                                    There is no path between start- and end-node found yet!
                                 </div>
                             </div>
                         </md-card-content>
