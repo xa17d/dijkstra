@@ -1,8 +1,63 @@
-<md-dialog aria-label="Import" style="background: rgba(33, 33, 33, 0); box-shadow: none;" class="md-whiteframe-z0" ng-cloak>
+<md-dialog aria-label="Import" style="position: fixed; top: 5%; left: 15%; min-width: 70%; max-width: 70%; width: 70%; max-height: 95%;" ng-cloak>
     <form>
         <md-dialog-content>
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Dijkstra</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="close()">
+                        <md-icon md-svg-src="img/icons/close.svg" aria-label="Close"></md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
             <div class="md-dialog-content">
-
+                <md-tabs md-dynamic-height md-border-bottom md-selected="selectedTabId">
+                    <md-tab label="General">
+                        <md-content class="md-padding">
+                            <h4>General</h4>
+                            <p>Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes in a graph, which may represent, for example, road networks. It was conceived by computer scientist Edsger W. Dijkstra in 1956 and published three years later.</p>
+                            <p>The algorithm exists in many variants; Dijkstra's original variant found the shortest path between two nodes,[2] but a more common variant fixes a single node as the "source" node and finds shortest paths from the source to all other nodes in the graph, producing a shortest-path tree.</p>
+                        </md-content>
+                        <div layout="row" layout-align="end center" flex>
+                            <md-button class="md-primary" ng-click="goToTab(1)">
+                                Yeah, now show me how it works!
+                            </md-button>
+                        </div>
+                    </md-tab>
+                    <md-tab label="Algorithm">
+                        <md-content class="md-padding">
+                            <h4>Algorithm</h4>
+                            <p>Let the node at which we are starting be called the initial node. Let the distance of node Y be the distance from the initial node to Y. Dijkstra's algorithm will assign some initial distance values and will try to improve them step by step.</p>
+                            <ol>
+                                <li>Assign to every node a tentative distance value: set it to zero for our initial node and to infinity for all other nodes.</li>
+                                <li>Set the initial node as current. Mark all other nodes unvisited. Create a set of all the unvisited nodes called the unvisited set.</li>
+                                <li>For the current node, consider all of its unvisited neighbors and calculate their tentative distances. Compare the newly calculated tentative distance to the current assigned value and assign the smaller one. For example, if the current node A is marked with a distance of 6, and the edge connecting it with a neighbor B has length 2, then the distance to B (through A) will be 6 + 2 = 8. If B was previously marked with a distance greater than 8 then change it to 8. Otherwise, keep the current value.</li>
+                                <li>When we are done considering all of the neighbors of the current node, mark the current node as visited and remove it from the unvisited set. A visited node will never be checked again.</li>
+                                <li>If the destination node has been marked visited (when planning a route between two specific nodes) or if the smallest tentative distance among the nodes in the unvisited set is infinity (when planning a complete traversal; occurs when there is no connection between the initial node and remaining unvisited nodes), then stop. The algorithm has finished.</li>
+                                <li>Otherwise, select the unvisited node that is marked with the smallest tentative distance, set it as the new "current node", and goback to step 3.</li>
+                            </ol>
+                            <div layout="row" layout-align="end center" flex>
+                                <md-button class="md-primary" ng-click="goToTab(2)">
+                                    OK, now show me the Application!
+                                </md-button>
+                            </div>
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="Application">
+                        <md-content class="md-padding">
+                            <h4>Application</h4>
+                            <p>This application is designed for students to learn the functionality of Dijkstra's algorithm visually and logically, as well as professionals for simple calculation of the shortest path in big graphs.</p>
+                            <p>At first draw a new graph on the upper right-hand sided panel or import an existing graph via the menu in JSON-encoding. In drawing-mode you can choose between drawing/editing edges and vertices.</p>
+                            <p>As soon as you have created the graph, you can run the algorithm step by step by clicking 'NEXT'. In the upper left-hand sided box you can see algorithms pseudocode. If you place your cursor on the green variables you can see their content. By clicking 'RUN' the algorithm starts workling with the choosen speed.</p>
+                            <p>As soon as the algorithm is running, you will find the content of important variables, all calculated distances as well as the result (if there is one already) at the bottom.</p>
+                            <div layout="row" layout-align="end center" flex>
+                                <md-button class="md-primary md-raised" ng-click="close()">
+                                    Let's Go!
+                                </md-button>
+                            </div>
+                        </md-content>
+                    </md-tab>
+                </md-tabs>
             </div>
         </md-dialog-content>
     </form>

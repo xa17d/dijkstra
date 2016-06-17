@@ -130,6 +130,11 @@ angular.module('dijkstraApp')
         $scope.showInfo = function () {
             $mdDialog.show({
                 controller: function ($scope) {
+                    $scope.selectedTabId = 0;
+                    $scope.goToTab = function(id) {
+                        $scope.selectedTabId = id;
+                    };
+
                     $scope.close = function () {
                         $mdDialog.hide();
                     };
