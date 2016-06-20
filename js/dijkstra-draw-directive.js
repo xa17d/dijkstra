@@ -20,8 +20,70 @@ angular.module('dijkstraApp')
             var nodeRadius = 20;
             var nodeStrokeWidth = 2;
 
-            var selectedVertex = null;
+            var selectedVertexDown = null;
+            var selectedVertexUp = null;
             var selectedEdge = null;
+
+            var mode = null;
+
+            element.bind('mousedown', function (event) {
+
+                mode = null;
+                selectedVertexDown = null;
+                selectedVertexUp = null;
+                selectedEdge = null;
+
+                // get coordinates
+                if (typeof event.offsetX !== 'undefined') {
+                    coordinateX = event.offsetX;
+                    coordinateY = event.offsetY;
+                } else {
+                    coordinateX = event.layerX - event.currentTarget.offsetLeft;
+                    coordinateY = event.layerY - event.currentTarget.offsetTop;
+                }
+
+                // is a vertex clicked?
+                angular.forEach(graph.getVertices(), function (vertex) {
+                    if (
+                        coordinateX >= vertex.coordinateX - 2.1 * nodeRadius && coordinateX <= vertex.coordinateX + 2.1 * nodeRadius &&
+                        coordinateY >= vertex.coordinateY - 2.1 * nodeRadius && coordinateY <= vertex.coordinateY + 2.1 * nodeRadius
+                    ) {
+                        selectedVertexDown = vertex;
+                        return;
+                    }
+                });
+
+                if (selectedVertexDown !== null) {
+                    // vertex is clicked
+                    mode = 'vertex';
+                }
+                else {
+                    // no vertex is selected, is a edge selected?
+                    var minDistance = Number.POSITIVE_INFINITY;
+                    angular.forEach(graph.getEdges(), function (edge) {
+                        var dtl = distanceToLine(coordinateX, coordinateY, edge);
+                        if (dtl.distance < minDistance) {
+                            minDistance = dtl.distance;
+                            selectedEdge = edge;
+                        }
+                    });
+
+                    if(minDistance < 12) {
+                        // existing vertex is clicked --> edit this vertex
+                        scope.$parent.toggleEdge(selectedEdge);
+                    }
+                    else {
+                        selectedEdge = null;
+
+                        // no vertex and no edge is clicked --> create new vertex
+                        graph.addVertex({
+                            coordinateX: coordinateX,
+                            coordinateY: coordinateY
+                        });
+                    }
+                }
+
+            });
 
             element.bind('mouseup', function (event) {
 
@@ -34,80 +96,39 @@ angular.module('dijkstraApp')
                     coordinateY = event.layerY - event.currentTarget.offsetTop;
                 }
 
-                scope.$watch('$parent.drawVertex', function () {
-                    selectedVertex = null;
-                    selectedEdge = null;
-                });
+                // are we in vertex mode?
+                if (mode === 'vertex') {
 
-
-                // vertex draw mode?
-                if (scope.$parent.drawVertex) {
-                    // is it a existing vertex?
-                    selectedVertex = null;
-
+                    // is it still the same vertex?
                     angular.forEach(graph.getVertices(), function (vertex) {
                         if (
                             coordinateX >= vertex.coordinateX - 2.1 * nodeRadius && coordinateX <= vertex.coordinateX + 2.1 * nodeRadius &&
                             coordinateY >= vertex.coordinateY - 2.1 * nodeRadius && coordinateY <= vertex.coordinateY + 2.1 * nodeRadius
                         ) {
-                            scope.$parent.toggleVertex(vertex);
-                            selectedVertex = vertex;
+                            selectedVertexUp = vertex;
                             return;
                         }
                     });
 
-                    if (selectedVertex === null) {
-                        graph.addVertex({
-                            coordinateX: coordinateX,
-                            coordinateY: coordinateY
-                        });
-                    }
-                }
-                    // edge draw mode
-                else {
-                    var currentVertex = null;
-                    selectedEdge = null;
+                    if (selectedVertexUp !== null) {
+                        // cursor was on vertex while mouseup
 
-                    angular.forEach(graph.getVertices(), function (vertex) {
-                        if (
-                            coordinateX >= vertex.coordinateX - nodeRadius && coordinateX <= vertex.coordinateX + nodeRadius &&
-                            coordinateY >= vertex.coordinateY - nodeRadius && coordinateY <= vertex.coordinateY + nodeRadius
-                        ) {
-                            currentVertex = vertex;
-                            return;
-                        }
-                    });
-
-                    // vertex was clicked
-                    if (currentVertex !== null) {
-                        if (selectedVertex === null) {
-                            selectedVertex = currentVertex;
+                        if (graph.equals(selectedVertexDown, selectedVertexUp)) {
+                            // mouseup and mousedown on same vertex --> edit this vertex
+                            mode = 'editVertex';
+                            scope.$parent.toggleVertex(selectedVertexUp);
                         }
                         else {
+                            // mouseup and mousedown on different vertices --> add new edge
                             var edge = {
-                                vertex1: currentVertex,
-                                vertex2: selectedVertex,
-                                weight: Math.round(verticesDistance(currentVertex, selectedVertex))
+                                vertex1: selectedVertexDown,
+                                vertex2: selectedVertexUp,
+                                weight: Math.round(verticesDistance(selectedVertexDown, selectedVertexUp))
                             };
                             graph.addEdge(edge);
-                            selectedVertex = null;
                         }
                     }
-                        // if no vertex is clicked, select nearest edge
-                    else {
-                        selectedVertex = null;
 
-                        var minDistance = Number.POSITIVE_INFINITY;
-                        angular.forEach(graph.getEdges(), function (edge) {
-                            var dtl = distanceToLine(coordinateX, coordinateY, edge);
-                            if (dtl.distance < minDistance) {
-                                minDistance = dtl.distance;
-                                selectedEdge = edge;
-                            }
-                        });
-
-                        scope.$parent.toggleEdge(selectedEdge);
-                    }
                 }
 
                 redrawCanvas();
@@ -375,7 +396,7 @@ angular.module('dijkstraApp')
                     });
 
                     angular.forEach(graph.getVertices(), function (vertex) {
-                        vertex.style = (selectedVertex !== null && graph.equals(vertex, selectedVertex)) ? colors.selected : colors.visible;
+                        vertex.style = (mode === 'editVertex' && graph.equals(vertex, selectedVertexUp)) ? colors.selected : colors.visible;
                     });
                 }
 

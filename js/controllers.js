@@ -3,8 +3,7 @@
 angular.module('dijkstraApp')
 
     .controller('MainController', ['$scope', '$window', '$mdDialog', '$mdSidenav', '$interval', 'graph', 'algorithm', function ($scope, $window, $mdDialog, $mdSidenav, $interval, graph, algorithm) {
-
-        $scope.drawVertex = true;
+        
         $scope.runInterval = 100;     // this is 1 second
 
         $scope.algorithm = algorithm;
