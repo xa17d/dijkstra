@@ -38,9 +38,9 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body ng-controller="MainController" ng-cloak ng-class="{'no-scroll': inDrawMode}">
 
-    <div ng-controller="MainController" ng-cloak>
+    <div>
 
         <md-toolbar>
             <div class="md-toolbar-tools md-whiteframe-z4">
@@ -106,12 +106,14 @@
                         <p> Export </p>
                     </md-list-item>
 
+                    <!--
                     <md-divider></md-divider>
 
                     <md-list-item ng-click="random()">
                         <md-icon md-svg-icon="img/icons/random.svg"></md-icon>
                         <p> Random </p>
                     </md-list-item>
+                    -->
                 </md-content>
             </md-sidenav>
 
@@ -335,7 +337,7 @@
                                 </tbody>
                             </table>
                             <div ng-hide="algorithm.display.path.length > 0">
-                                Vertices will be shown as soon as algorithm is running
+                                Vertices will be shown as soon as algorithm is running.
                             </div>
                         </md-card-content>
                     </md-card>

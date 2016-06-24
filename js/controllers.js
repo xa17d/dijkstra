@@ -8,6 +8,19 @@ angular.module('dijkstraApp')
 
         $scope.algorithm = algorithm;
         $scope.graph = graph;
+        
+        $scope.inDrawMode = false;
+        $scope.setInDrawMode = function (draw) {
+            $scope.inDrawMode = draw;
+
+            // jquery alternative
+            if(draw) {
+                $("body").addClass("no-scroll");
+            }
+            else {
+                $("body").removeClass("no-scroll");
+            }
+        };
 
         $scope.toggleMenu = function () {
             $mdSidenav('menu').toggle();

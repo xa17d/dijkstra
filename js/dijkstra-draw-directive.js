@@ -28,6 +28,8 @@ angular.module('dijkstraApp')
 
             element.bind('mousedown', function (event) {
 
+                scope.$parent.setInDrawMode(true);
+
                 mode = null;
                 selectedVertexDown = null;
                 selectedVertexUp = null;
@@ -130,6 +132,8 @@ angular.module('dijkstraApp')
                     }
 
                 }
+
+                scope.$parent.setInDrawMode(false);
 
                 redrawCanvas();
             });
